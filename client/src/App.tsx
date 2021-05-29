@@ -72,7 +72,7 @@ function Ride({ ride }: RideProps) {
   return (
     <>
       <div>
-        {ride.group.name}: {ride.title}
+        {ride.rideLevel.name}: {ride.title}
       </div>
       <div>
         {ride.meetTime?.toLocaleString() || ride.meetTimeDescription} at{" "}
