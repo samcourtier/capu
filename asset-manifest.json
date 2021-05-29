@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/capu/static/css/main.4b590d19.chunk.css",
+    "main.js": "/capu/static/js/main.289f0356.chunk.js",
+    "main.js.map": "/capu/static/js/main.289f0356.chunk.js.map",
+    "runtime-main.js": "/capu/static/js/runtime-main.3324ecf3.js",
+    "runtime-main.js.map": "/capu/static/js/runtime-main.3324ecf3.js.map",
+    "static/js/2.bdff26c8.chunk.js": "/capu/static/js/2.bdff26c8.chunk.js",
+    "static/js/2.bdff26c8.chunk.js.map": "/capu/static/js/2.bdff26c8.chunk.js.map",
+    "index.html": "/capu/index.html",
+    "static/css/main.4b590d19.chunk.css.map": "/capu/static/css/main.4b590d19.chunk.css.map",
+    "static/js/2.bdff26c8.chunk.js.LICENSE.txt": "/capu/static/js/2.bdff26c8.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3324ecf3.js",
+    "static/js/2.bdff26c8.chunk.js",
+    "static/css/main.4b590d19.chunk.css",
+    "static/js/main.289f0356.chunk.js"
+  ]
+}
