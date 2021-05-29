@@ -1,15 +1,7 @@
-import {
-  User,
-  Announcement,
-  Ride,
-  Hangout,
-  GroupEvent,
-  announcements,
-  groupEventsByYMD,
-} from "./api";
+import * as api from "./api";
 
 interface NavProps {
-  user: User | null;
+  user: api.User | null;
 }
 function Nav({ user }: NavProps) {
   return (
@@ -40,10 +32,10 @@ function Nav({ user }: NavProps) {
   );
 }
 
-interface AnnouncementViewProps {
-  announcement: Announcement;
+interface AnnouncementProps {
+  announcement: api.Announcement;
 }
-function AnnouncementView({ announcement }: AnnouncementViewProps) {
+function Announcement({ announcement }: AnnouncementProps) {
   return (
     <>
       <div>{announcement.title}</div>
@@ -60,9 +52,9 @@ function AnnouncementView({ announcement }: AnnouncementViewProps) {
 function AnnouncementList() {
   return (
     <ul>
-      {Object.values(announcements).map((a) => (
+      {Object.values(api.announcements).map((a) => (
         <li key={a.id}>
-          <AnnouncementView announcement={a} />
+          <Announcement announcement={a} />
         </li>
       ))}
     </ul>
@@ -73,10 +65,10 @@ function AnnouncementList() {
 //       be distinguished from their (possibly non-existant) actuals at some
 //       point.
 
-interface RideViewProps {
-  ride: Ride;
+interface RideProps {
+  ride: api.Ride;
 }
-function RideView({ ride }: RideViewProps) {
+function Ride({ ride }: RideProps) {
   return (
     <>
       <div>
@@ -120,24 +112,24 @@ function RideView({ ride }: RideViewProps) {
 }
 
 interface RideListProps {
-  rides: Ride[];
+  rides: api.Ride[];
 }
 function RideList({ rides }: RideListProps) {
   return (
     <ul>
       {rides.map((r) => (
         <li key={r.id}>
-          <RideView ride={r} />
+          <Ride ride={r} />
         </li>
       ))}
     </ul>
   );
 }
 
-interface HangoutViewProps {
-  hangout: Hangout;
+interface HangoutProps {
+  hangout: api.Hangout;
 }
-function HangoutView({ hangout }: HangoutViewProps) {
+function Hangout({ hangout }: HangoutProps) {
   return (
     <>
       <div>{hangout.title}</div>
@@ -152,25 +144,25 @@ function HangoutView({ hangout }: HangoutViewProps) {
 }
 
 interface HangoutListProps {
-  hangouts: Hangout[];
+  hangouts: api.Hangout[];
 }
 
-function HangoutsList({ hangouts }: HangoutListProps) {
+function HangoutList({ hangouts }: HangoutListProps) {
   return (
     <ul>
       {hangouts.map((h) => (
         <li key={h.id}>
-          <HangoutView hangout={h} />
+          <Hangout hangout={h} />
         </li>
       ))}
     </ul>
   );
 }
 
-interface GroupEventViewProps {
-  groupEvent: GroupEvent;
+interface GroupEventProps {
+  groupEvent: api.GroupEvent;
 }
-function GroupEventView({ groupEvent }: GroupEventViewProps) {
+function GroupEvent({ groupEvent }: GroupEventProps) {
   return (
     <>
       <div>{groupEvent.title}</div>
@@ -188,7 +180,7 @@ function GroupEventView({ groupEvent }: GroupEventViewProps) {
 
         <dt>Event Hangouts: </dt>
         <dd>
-          <HangoutsList hangouts={groupEvent.hangouts} />
+          <HangoutList hangouts={groupEvent.hangouts} />
         </dd>
       </dl>
     </>
@@ -196,14 +188,14 @@ function GroupEventView({ groupEvent }: GroupEventViewProps) {
 }
 
 interface GroupEventListProps {
-  groupEvents: GroupEvent[];
+  groupEvents: api.GroupEvent[];
 }
 function GroupEventList({ groupEvents }: GroupEventListProps) {
   return (
     <ul>
       {Object.values(groupEvents).map((e) => (
         <li key={e.id}>
-          <GroupEventView groupEvent={e} />
+          <GroupEvent groupEvent={e} />
         </li>
       ))}
     </ul>
@@ -213,7 +205,7 @@ function GroupEventList({ groupEvents }: GroupEventListProps) {
 function GroupEventCalendar() {
   return (
     <ul>
-      {groupEventsByYMD.map((y) => (
+      {api.groupEventsByYMD.map((y) => (
         <li key={y.year}>
           {y.year}
           <ul>
@@ -270,4 +262,3 @@ function App() {
 }
 
 export default App;
-
