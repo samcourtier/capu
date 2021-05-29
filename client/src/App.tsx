@@ -146,7 +146,6 @@ function Hangout({ hangout }: HangoutProps) {
 interface HangoutListProps {
   hangouts: api.Hangout[];
 }
-
 function HangoutList({ hangouts }: HangoutListProps) {
   return (
     <ul>

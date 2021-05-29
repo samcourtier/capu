@@ -116,12 +116,12 @@ const weatherForecasts: Record<string, WeatherForecast> = {
   },
 };
 
-interface Group {
+interface RideLevel {
   id: string;
   name: string;
 }
 
-const groups: Record<string, Group> = {
+const rideLevel: Record<string, RideLevel> = {
   mondo: {
     id: "08508be8-7850-4792-a7af-3b47fb1e6e6e",
     name: "Mondo",
@@ -172,7 +172,7 @@ type Event = {
 export type Ride = Event & {
   weatherForecast: WeatherForecast;
   status: "planned" | "tentative" | "confirmed";
-  group: Group;
+  rideLevel: RideLevel;
   leaders: User[];
   route: Route;
 };
@@ -186,7 +186,7 @@ const rides: Record<string, Ride> = {
     description: "A ride description",
     weatherForecast: weatherForecasts[0],
     status: "tentative",
-    group: groups["mondo"],
+    rideLevel: rideLevel["mondo"],
     leaders: [users["alice"], users["bob"]],
     route: routes[0],
   },
@@ -198,7 +198,7 @@ const rides: Record<string, Ride> = {
     weatherForecast: weatherForecasts[0],
     status: "confirmed",
     description: "Another ride description",
-    group: groups["midi"],
+    rideLevel: rideLevel["midi"],
     leaders: [users["carol"]],
     route: routes[1],
   },
