@@ -20,9 +20,14 @@ jobs:
         with:
           node-version: '16.x'
 
-      - working-directory: ./client
+      - name: Build
+        working-directory: ./client
         run: |
-          git config user.email "samcourtier@gmail.com"
-          git config user.name "GitHub Action Runner"
           npm install
-          npm run deploy
+          npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./client/build
