@@ -41,17 +41,19 @@ interface User {
   displayName: string;
 }
 
-const alice: User = {
-  id: "191315df-2a80-46f6-977c-058b5a8719c5",
-  displayName: "Alice A",
-};
-const bob: User = {
-  id: "1a31ec6c-5c02-4c16-8c2f-59c220e0a31e",
-  displayName: "Bob B",
-};
-const carol: User = {
-  id: "158c5b1f-34e5-40ad-a5da-3f5da775e52a",
-  displayName: "Carol C",
+const users: Record<string, User> = {
+  alice: {
+    id: "191315df-2a80-46f6-977c-058b5a8719c5",
+    displayName: "Alice A",
+  },
+  bob: {
+    id: "1a31ec6c-5c02-4c16-8c2f-59c220e0a31e",
+    displayName: "Bob B",
+  },
+  carol: {
+    id: "158c5b1f-34e5-40ad-a5da-3f5da775e52a",
+    displayName: "Carol C",
+  },
 };
 
 interface Announcement {
@@ -62,32 +64,34 @@ interface Announcement {
   body: string;
 }
 
-const announcements: Announcement[] = [
-  {
+const announcements: Record<string, Announcement> = {
+  0: {
     id: "da7fcf43-830b-4776-9d0e-22c7902048b8",
     submittedAt: new Date("2021-06-05 9:00"),
-    submittedBy: alice,
+    submittedBy: users["alice"],
     title: "Announcement 2",
     body: "Bob Loblau Law",
   },
-  {
+  1: {
     id: "96483807-83f2-42fb-8837-ccc40910edf5",
     submittedAt: new Date("2021-06-01 9:00"),
-    submittedBy: carol,
+    submittedBy: users["carol"],
     title: "Announcement 1",
     body: "Blah blah blah blah",
   },
-];
+};
 
 interface Place {
   id: string;
   name: string;
 }
 
-const mndot: Place = {
-  id: "886f18d2-8dbe-4d5e-85e4-63f9925c6668",
-  name: "MnDOT",
-  // Also, prob. a link to Google Maps or something
+const places: Record<string, Place> = {
+  mndot: {
+    id: "886f18d2-8dbe-4d5e-85e4-63f9925c6668",
+    name: "MnDOT",
+    // Also, prob. a link to Google Maps or something
+  },
 };
 
 interface WeatherForecast {
@@ -99,15 +103,17 @@ interface WeatherForecast {
   expectedPrecipInches: number;
 }
 
-const weatherForecast: WeatherForecast = {
-  // Maybe just start with the forecast for the meet place and get fancier
-  // with using route data (probably much) later
-  sky: "Sunny",
-  tempDegrees: 65,
-  dewpoint: 50,
-  wind: "E 1 mph",
-  precipProb: 5,
-  expectedPrecipInches: 0.01,
+const weatherForecasts: Record<string, WeatherForecast> = {
+  0: {
+    // Maybe just start with the forecast for the meet place and get fancier
+    // with using route data (probably much) later
+    sky: "Sunny",
+    tempDegrees: 65,
+    dewpoint: 50,
+    wind: "E 1 mph",
+    precipProb: 5,
+    expectedPrecipInches: 0.01,
+  },
 };
 
 interface Group {
@@ -115,14 +121,15 @@ interface Group {
   name: string;
 }
 
-const mondo: Group = {
-  id: "08508be8-7850-4792-a7af-3b47fb1e6e6e",
-  name: "Mondo",
-};
-
-const midi: Group = {
-  id: "412e88e3-4358-4ac3-83f1-fac665cb3c20",
-  name: "Midi",
+const groups: Record<string, Group> = {
+  mondo: {
+    id: "08508be8-7850-4792-a7af-3b47fb1e6e6e",
+    name: "Mondo",
+  },
+  midi: {
+    id: "412e88e3-4358-4ac3-83f1-fac665cb3c20",
+    name: "Midi",
+  },
 };
 
 interface Route {
@@ -133,21 +140,22 @@ interface Route {
   expectedClimbingDifficulty: "easy" | "medium" | "hard";
 }
 
-const routeA: Route = {
-  id: "be819e33-1510-4ab4-867d-bccd8d6c1794",
-  name: "Route A",
-  description: "A route description",
-  expectedMiles: 50,
-  expectedClimbingDifficulty: "hard",
-  // Also prob link to the route or something fancier
-};
-
-const routeB: Route = {
-  id: "30e14365-af7b-4907-9ff9-c509f4e78286",
-  name: "Route B",
-  description: "Another route description",
-  expectedMiles: 30,
-  expectedClimbingDifficulty: "easy",
+const routes: Record<string, Route> = {
+  0: {
+    id: "be819e33-1510-4ab4-867d-bccd8d6c1794",
+    name: "Route A",
+    description: "A route description",
+    expectedMiles: 50,
+    expectedClimbingDifficulty: "hard",
+    // Also prob link to the route or something fancier
+  },
+  1: {
+    id: "30e14365-af7b-4907-9ff9-c509f4e78286",
+    name: "Route B",
+    description: "Another route description",
+    expectedMiles: 30,
+    expectedClimbingDifficulty: "easy",
+  },
 };
 
 type Event = {
@@ -169,37 +177,37 @@ type Ride = Event & {
   route: Route;
 };
 
-const groupEvent0Rides: Ride[] = [
-  {
+const rides: Record<string, Ride> = {
+  0: {
     id: "0b3117e1-4309-4c46-84ad-bd25ecadf708",
     title: "A Mondo Ride",
     meetTime: new Date("2021-07-01 16:30"),
-    meetPlace: mndot,
+    meetPlace: places["mndot"],
     description: "A ride description",
-    weatherForecast: weatherForecast,
+    weatherForecast: weatherForecasts[0],
     status: "tentative",
-    group: mondo,
-    leaders: [alice, bob],
-    route: routeA,
+    group: groups["mondo"],
+    leaders: [users["alice"], users["bob"]],
+    route: routes[0],
   },
-  {
+  1: {
     id: "284d7258-ad88-454d-b8a6-e09589d0742e",
     title: "A Midi Ride",
     meetTime: new Date("2021-07-01 16:45"),
-    meetPlace: mndot,
-    weatherForecast: weatherForecast,
+    meetPlace: places["mndot"],
+    weatherForecast: weatherForecasts[0],
     status: "confirmed",
     description: "Another ride description",
-    group: midi,
-    leaders: [carol],
-    route: routeB,
+    group: groups["midi"],
+    leaders: [users["carol"]],
+    route: routes[1],
   },
-];
+};
 
 type Hangout = Event & {};
 
-const groupEvent0hangouts: Hangout[] = [
-  {
+const hangouts: Record<string, Hangout> = {
+  0: {
     id: "e41c27c6-7f10-49d3-9b26-07cf3556f3d6",
     title: "Trivia Night",
     meetTimeDescription: "After the rides",
@@ -209,7 +217,7 @@ const groupEvent0hangouts: Hangout[] = [
       name: "Tin Whiskers",
     },
   },
-];
+};
 
 interface Series {
   id: string;
@@ -217,9 +225,11 @@ interface Series {
   description?: string;
 }
 
-const series0 = {
-  id: "5cdc401c-313e-479e-8ec6-5adf84a78027",
-  name: "Wednesday Night Rides",
+const series: Record<string, Series> = {
+  wednesdayNightRides: {
+    id: "5cdc401c-313e-479e-8ec6-5adf84a78027",
+    name: "Wednesday Night Rides",
+  },
 };
 
 interface GroupEvent {
@@ -230,22 +240,39 @@ interface GroupEvent {
   hangouts: Hangout[];
 }
 
-const groupEvents: GroupEvent[] = [
-  {
+const groupEvents: Record<string, GroupEvent> = {
+  0: {
     id: "951badf6-ab50-41f5-8320-1f4ea1f437d5",
     title: "Wednesday Night Ride",
-    series: series0,
-    rides: groupEvent0Rides,
-    hangouts: groupEvent0hangouts,
+    series: series["wednesdayNightRides"],
+    rides: Object.values(rides),
+    hangouts: Object.values(hangouts),
   },
-  {
+  1: {
     id: "Not 951badf6-ab50-41f5-8320-1f4ea1f437d5",
     title: "A Temporary Copypasta of the Other Event for Illustration",
-    series: series0,
-    rides: groupEvent0Rides,
-    hangouts: groupEvent0hangouts,
+    series: series["wednesdayNightRides"],
+    rides: Object.values(rides),
+    hangouts: Object.values(hangouts),
   },
   // TODO: delete the copypasta + more event examples (e.g. Prudhomme)
+};
+
+const groupEventsByYMD = [
+  {
+    year: 2021,
+    months: [
+      {
+        name: "July",
+        dates: [
+          {
+            date: new Date("2021-07-01"),
+            events: [groupEvents[0], groupEvents[1]],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // Components
@@ -302,7 +329,7 @@ function AnnouncementView({ announcement }: AnnouncementViewProps) {
 function AnnouncementList() {
   return (
     <ul>
-      {announcements.map((a) => (
+      {Object.values(announcements).map((a) => (
         <li key={a.id}>
           <AnnouncementView announcement={a} />
         </li>
@@ -409,10 +436,10 @@ function HangoutsList({ hangouts }: HangoutListProps) {
   );
 }
 
-interface EventViewProps {
+interface GroupEventViewProps {
   groupEvent: GroupEvent;
 }
-function EventView({ groupEvent }: EventViewProps) {
+function GroupEventView({ groupEvent }: GroupEventViewProps) {
   return (
     <>
       <div>{groupEvent.title}</div>
@@ -437,12 +464,42 @@ function EventView({ groupEvent }: EventViewProps) {
   );
 }
 
-function EventList() {
+interface GroupEventListProps {
+  groupEvents: GroupEvent[];
+}
+function GroupEventList({ groupEvents }: GroupEventListProps) {
   return (
     <ul>
-      {groupEvents.map((e) => (
+      {Object.values(groupEvents).map((e) => (
         <li key={e.id}>
-          <EventView groupEvent={e} />
+          <GroupEventView groupEvent={e} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function GroupEventCalendar() {
+  return (
+    <ul>
+      {groupEventsByYMD.map((y) => (
+        <li key={y.year}>
+          {y.year}
+          <ul>
+            {y.months.map((m) => (
+              <li key={m.name}>
+                {m.name}
+                <ul>
+                  {m.dates.map((d) => (
+                    <li key={d.date.toISOString()}>
+                      {d.date.toLocaleDateString()}
+                      <GroupEventList groupEvents={d.events} />
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
         </li>
       ))}
     </ul>
@@ -456,7 +513,7 @@ function Home() {
       <AnnouncementList />
 
       <h2>Upcoming Events</h2>
-      <EventList />
+      <GroupEventCalendar />
     </>
   );
 }
