@@ -2,7 +2,6 @@
 // NOTE: There are bunch of examples in here that don't have interfaces yet
 
 // UUID v4 reservoir for examples:
-// 5cdc401c-313e-479e-8ec6-5adf84a78027
 // 01d3586b-cc73-4672-9669-71e504abbd7d
 // 8d50e334-dbec-4fb7-a46e-04ee4ece0311
 // e014a8c5-e245-48a4-848c-a095d210bae6
@@ -212,10 +211,21 @@ const groupEvent0hangouts: Hangout[] = [
   },
 ];
 
+interface Series {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+const series0 = {
+  id: "5cdc401c-313e-479e-8ec6-5adf84a78027",
+  name: "Wednesday Night Rides",
+};
+
 interface GroupEvent {
   id: string;
   title: string;
-  series: string; // TODO: Make this an object
+  series: Series;
   rides: Ride[];
   hangouts: Hangout[];
 }
@@ -224,14 +234,14 @@ const groupEvents: GroupEvent[] = [
   {
     id: "951badf6-ab50-41f5-8320-1f4ea1f437d5",
     title: "Wednesday Night Ride",
-    series: "Wednesday Night Rides",
+    series: series0,
     rides: groupEvent0Rides,
     hangouts: groupEvent0hangouts,
   },
   {
     id: "Not 951badf6-ab50-41f5-8320-1f4ea1f437d5",
     title: "A Temporary Copypasta of the Other Event for Illustration",
-    series: "Wednesday Night Rides",
+    series: series0,
     rides: groupEvent0Rides,
     hangouts: groupEvent0hangouts,
   },
@@ -409,7 +419,7 @@ function EventView({ groupEvent }: EventViewProps) {
 
       <dl>
         <dt>Event series:</dt>
-        <dd>{groupEvent.series}</dd>
+        <dd>{groupEvent.series.name}</dd>
       </dl>
 
       <dl>
