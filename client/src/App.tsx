@@ -55,6 +55,31 @@ const carol: User = {
   displayName: "Carol C",
 };
 
+interface Announcement {
+  id: string;
+  submittedAt: Date;
+  submittedBy: User;
+  title: string;
+  body: string;
+}
+
+const announcements: Announcement[] = [
+  {
+    id: "da7fcf43-830b-4776-9d0e-22c7902048b8",
+    submittedAt: new Date("2021-06-05 9:00"),
+    submittedBy: alice,
+    title: "Announcement 2",
+    body: "Bob Loblau Law",
+  },
+  {
+    id: "96483807-83f2-42fb-8837-ccc40910edf5",
+    submittedAt: new Date("2021-06-01 9:00"),
+    submittedBy: carol,
+    title: "Announcement 1",
+    body: "Blah blah blah blah",
+  },
+];
+
 interface Place {
   id: string;
   name: string;
@@ -66,12 +91,158 @@ const mndot: Place = {
   // Also, prob. a link to Google Maps or something
 };
 
+interface WeatherForecast {
+  sky: string;
+  tempDegrees: number;
+  dewpoint: number;
+  wind: string;
+  precipProb: number;
+  expectedPrecipInches: number;
+}
+
+const weatherForecast: WeatherForecast = {
+  // Maybe just start with the forecast for the meet place and get fancier
+  // with using route data (probably much) later
+  sky: "Sunny",
+  tempDegrees: 65,
+  dewpoint: 50,
+  wind: "E 1 mph",
+  precipProb: 5,
+  expectedPrecipInches: 0.01,
+};
+
+interface Group {
+  id: string;
+  name: string;
+}
+
+const mondo: Group = {
+  id: "08508be8-7850-4792-a7af-3b47fb1e6e6e",
+  name: "Mondo",
+};
+
+const midi: Group = {
+  id: "412e88e3-4358-4ac3-83f1-fac665cb3c20",
+  name: "Midi",
+};
+
+interface Route {
+  id: string;
+  name: string;
+  description: string;
+  expectedMiles: number;
+  expectedClimbingDifficulty: "easy" | "medium" | "hard";
+}
+
+const routeA: Route = {
+  id: "be819e33-1510-4ab4-867d-bccd8d6c1794",
+  name: "Route A",
+  description: "A route description",
+  expectedMiles: 50,
+  expectedClimbingDifficulty: "hard",
+  // Also prob link to the route or something fancier
+};
+
+const routeB: Route = {
+  id: "30e14365-af7b-4907-9ff9-c509f4e78286",
+  name: "Route B",
+  description: "Another route description",
+  expectedMiles: 30,
+  expectedClimbingDifficulty: "easy",
+};
+
+type Event = {
+  // An abstract event -- cf. a GroupEvent which is defined below
+  id: string;
+  title: string;
+  meetPlace: Place;
+  description: string;
+} & (
+  | { meetTime: Date; meetTimeDescription?: never }
+  | { meetTime?: never; meetTimeDescription: string }
+);
+
+type Ride = Event & {
+  weatherForecast: WeatherForecast;
+  status: "planned" | "tentative" | "confirmed";
+  group: Group;
+  leaders: User[];
+  route: Route;
+};
+
+const groupEvent0Rides: Ride[] = [
+  {
+    id: "0b3117e1-4309-4c46-84ad-bd25ecadf708",
+    title: "A Mondo Ride",
+    meetTime: new Date("2021-07-01 16:30"),
+    meetPlace: mndot,
+    description: "A ride description",
+    weatherForecast: weatherForecast,
+    status: "tentative",
+    group: mondo,
+    leaders: [alice, bob],
+    route: routeA,
+  },
+  {
+    id: "284d7258-ad88-454d-b8a6-e09589d0742e",
+    title: "A Midi Ride",
+    meetTime: new Date("2021-07-01 16:45"),
+    meetPlace: mndot,
+    weatherForecast: weatherForecast,
+    status: "confirmed",
+    description: "Another ride description",
+    group: midi,
+    leaders: [carol],
+    route: routeB,
+  },
+];
+
+type Hangout = Event & {};
+
+const groupEvent0hangouts: Hangout[] = [
+  {
+    id: "e41c27c6-7f10-49d3-9b26-07cf3556f3d6",
+    title: "Trivia Night",
+    meetTimeDescription: "After the rides",
+    description: "Come drink with us!",
+    meetPlace: {
+      id: "d31473b3-dcdf-42b4-9816-f4b3ae8d9555",
+      name: "Tin Whiskers",
+    },
+  },
+];
+
+interface GroupEvent {
+  id: string;
+  title: string;
+  series: string; // TODO: Make this an object
+  rides: Ride[];
+  hangouts: Hangout[];
+}
+
+const groupEvents: GroupEvent[] = [
+  {
+    id: "951badf6-ab50-41f5-8320-1f4ea1f437d5",
+    title: "Wednesday Night Ride",
+    series: "Wednesday Night Rides",
+    rides: groupEvent0Rides,
+    hangouts: groupEvent0hangouts,
+  },
+  {
+    id: "Not 951badf6-ab50-41f5-8320-1f4ea1f437d5",
+    title: "A Temporary Copypasta of the Other Event for Illustration",
+    series: "Wednesday Night Rides",
+    rides: groupEvent0Rides,
+    hangouts: groupEvent0hangouts,
+  },
+  // TODO: delete the copypasta + more event examples (e.g. Prudhomme)
+];
+
 // Components
 
 interface NavProps {
   user: User | null;
 }
-
 function Nav({ user }: NavProps) {
   return (
     <nav>
@@ -101,237 +272,167 @@ function Nav({ user }: NavProps) {
   );
 }
 
-function Announcement() {}
+interface AnnouncementViewProps {
+  announcement: Announcement;
+}
+function AnnouncementView({ announcement }: AnnouncementViewProps) {
+  return (
+    <>
+      <div>{announcement.title}</div>
+      <div>
+        Submitted {announcement.submittedAt.toLocaleString()} by{" "}
+        {announcement.submittedBy.displayName}
+      </div>
 
-function AnnouncementList() {}
+      <div>{announcement.body}</div>
+    </>
+  );
+}
 
-// NOTE: These events/rides/hangouts are all /planned/ ones -- they'll have to
+function AnnouncementList() {
+  return (
+    <ul>
+      {announcements.map((a) => (
+        <li key={a.id}>
+          <AnnouncementView announcement={a} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// NOTE: These groupEvents/rides/hangouts are all /planned/ ones -- they'll have to
 //       be distinguished from their (possibly non-existant) actuals at some
 //       point.
 
-function Ride() {}
+interface RideViewProps {
+  ride: Ride;
+}
+function RideView({ ride }: RideViewProps) {
+  return (
+    <>
+      <div>
+        {ride.group.name}: {ride.title}
+      </div>
+      <div>
+        {ride.meetTime?.toLocaleString() || ride.meetTimeDescription} at{" "}
+        {ride.meetPlace.name}
+      </div>
 
-function RideList() {}
+      <p>{ride.description}</p>
 
-function Meetup() {}
+      <dl>
+        <dt>Status:</dt>
+        <dd>{ride.status}</dd>
 
-function Meetups() {}
+        <dt>Route:</dt>
+        <dd>
+          <div>{ride.route.name}</div>
+          <div>{ride.route.description}</div>
+          <dl>
+            <dt>Expected distance:</dt>
+            <dd>(about {ride.route.expectedMiles} miles)</dd>
 
-function Event() {}
+            <dt>Expected Climbing difficulty:</dt>
+            <dd>{ride.route.expectedClimbingDifficulty}</dd>
+          </dl>
+        </dd>
 
-function EventList() {
-  const weatherForecast = {
-    // Maybe just start with the forecast for the meet place and get fancier
-    // with using route data (probably much) later
-    sky: "Sunny",
-    tempDegrees: 65,
-    dewpoint: 50,
-    wind: "E 1 mph",
-    precipProb: 5,
-    expectedPrecipInches: 0.01,
-  };
+        <dt>Ride leaders:</dt>
+        <dd>
+          <ul>
+            {ride.leaders.map((u) => (
+              <li key={u.id}>{u.displayName}</li>
+            ))}
+          </ul>
+        </dd>
+      </dl>
+    </>
+  );
+}
 
-  const events = [
-    {
-      id: "951badf6-ab50-41f5-8320-1f4ea1f437d5",
-      title: "Wednesday Night Ride",
-      series: "Wednesday Night Rides",
-      rides: [
-        {
-          id: "0b3117e1-4309-4c46-84ad-bd25ecadf708",
-          title: "A Mondo Ride",
-          meetTime: new Date("2021-07-01 16:30"),
-          meetPlace: mndot,
-          weatherForecast: weatherForecast,
-          status: "tentative",
-          description: "A ride description",
-          group: { id: "08508be8-7850-4792-a7af-3b47fb1e6e6e", name: "Mondo" },
-          leaders: [alice, bob],
-          route: {
-            id: "be819e33-1510-4ab4-867d-bccd8d6c1794",
-            name: "Route A",
-            description: "A route description",
-            expectedMiles: 50,
-            // Also prob link to the route or something fancier
-          },
-        },
-        {
-          id: "284d7258-ad88-454d-b8a6-e09589d0742e",
-          title: "A Midi Ride",
-          meetTime: new Date("2021-07-01 16:45"),
-          meetPlace: mndot,
-          weatherForecast: weatherForecast,
-          status: "confirmed",
-          description: "Another ride description",
-          group: {
-            id: "412e88e3-4358-4ac3-83f1-fac665cb3c20",
-            name: "Midi",
-          },
-          leaders: [carol],
-          route: {
-            id: "30e14365-af7b-4907-9ff9-c509f4e78286",
-            name: "Route B",
-            description: "Another route description",
-            expectedMiles: 40,
-          },
-        },
-      ],
-      hangouts: [
-        {
-          id: "e41c27c6-7f10-49d3-9b26-07cf3556f3d6",
-          title: "Trivia Night",
-          meetTime: "After the rides", // Field should be a date or a string
-          description: "Come drink with us!",
-          meetPlace: {
-            id: "d31473b3-dcdf-42b4-9816-f4b3ae8d9555",
-            name: "Tin Whiskers",
-          },
-        },
-      ],
-    },
-    {
-      id: "Not 951badf6-ab50-41f5-8320-1f4ea1f437d5",
-      title: "A Temporary Copypasta of the Other Event for Illustration",
-      series: "Wednesday Night Rides",
-      rides: [
-        {
-          id: "0b3117e1-4309-4c46-84ad-bd25ecadf708",
-          title: "A Mondo Ride",
-          meetTime: new Date("2021-07-01 16:30"),
-          meetPlace: mndot,
-          weatherForecast: weatherForecast,
-          status: "tentative",
-          description: "A ride description",
-          group: { id: "08508be8-7850-4792-a7af-3b47fb1e6e6e", name: "Mondo" },
-          leaders: [alice, bob],
-          route: {
-            id: "be819e33-1510-4ab4-867d-bccd8d6c1794",
-            name: "Route A",
-            description: "A route description",
-            expectedMiles: 50,
-            // Also prob link to the route or something fancier
-          },
-        },
-        {
-          id: "284d7258-ad88-454d-b8a6-e09589d0742e",
-          title: "A Midi Ride",
-          meetTime: new Date("2021-07-01 16:45"),
-          meetPlace: mndot,
-          weatherForecast: weatherForecast,
-          status: "confirmed",
-          description: "Another ride description",
-          group: {
-            id: "412e88e3-4358-4ac3-83f1-fac665cb3c20",
-            name: "Midi",
-          },
-          leaders: [carol],
-          route: {
-            id: "30e14365-af7b-4907-9ff9-c509f4e78286",
-            name: "Route B",
-            description: "Another route description",
-            expectedMiles: 40,
-          },
-        },
-      ],
-      hangouts: [
-        {
-          id: "e41c27c6-7f10-49d3-9b26-07cf3556f3d6",
-          title: "After-ride drinks at Tin Whiskers",
-          meetTime: "After the rides", // Field should be a date or a string
-          description: "Come drink with us!",
-          meetPlace: {
-            id: "d31473b3-dcdf-42b4-9816-f4b3ae8d9555",
-            name: "Tin Whiskers",
-          },
-        },
-      ],
-    },
-    // TODO: delete the copypasta + more event examples (e.g. Prudhomme)
-  ];
-
-  // NEXT: Break this up into the empty components above
+interface RideListProps {
+  rides: Ride[];
+}
+function RideList({ rides }: RideListProps) {
   return (
     <ul>
-      {events.map((e) => (
+      {rides.map((r) => (
+        <li key={r.id}>
+          <RideView ride={r} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+interface HangoutViewProps {
+  hangout: Hangout;
+}
+function HangoutView({ hangout }: HangoutViewProps) {
+  return (
+    <>
+      <div>{hangout.title}</div>
+      <div>
+        {hangout.meetTime?.toLocaleString() || hangout.meetTimeDescription} at{" "}
+        {hangout.meetPlace.name}
+      </div>
+
+      <p>{hangout.description}</p>
+    </>
+  );
+}
+
+interface HangoutListProps {
+  hangouts: Hangout[];
+}
+
+function HangoutsList({ hangouts }: HangoutListProps) {
+  return (
+    <ul>
+      {hangouts.map((h) => (
+        <li key={h.id}>
+          <HangoutView hangout={h} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+interface EventViewProps {
+  groupEvent: GroupEvent;
+}
+function EventView({ groupEvent }: EventViewProps) {
+  return (
+    <>
+      <div>{groupEvent.title}</div>
+
+      <dl>
+        <dt>Event series:</dt>
+        <dd>{groupEvent.series}</dd>
+      </dl>
+
+      <dl>
+        <dt>Event Rides: </dt>
+        <dd>
+          <RideList rides={groupEvent.rides} />
+        </dd>
+
+        <dt>Event Hangouts: </dt>
+        <dd>
+          <HangoutsList hangouts={groupEvent.hangouts} />
+        </dd>
+      </dl>
+    </>
+  );
+}
+
+function EventList() {
+  return (
+    <ul>
+      {groupEvents.map((e) => (
         <li key={e.id}>
-          <div>{e.title}</div>
-
-          <dl>
-            <dt>Event series:</dt>
-            <dd>{e.series}</dd>
-          </dl>
-
-          <dl>
-            <dt>Event Rides: </dt>
-            <dd>
-              {/*
-               * RideList
-               */}
-              <ul>
-                {e.rides.map((r) => (
-                  <li key={r.id}>
-                    {/*
-                     * Ride
-                     */}
-                    <>
-                      <div>
-                        {r.group.name}: {r.title}
-                      </div>
-                      <div>
-                        {r.meetTime.toLocaleString()} at {r.meetPlace.name}
-                      </div>
-
-                      <p>{r.description}</p>
-
-                      <dl>
-                        <dt>Status:</dt>
-                        <dd>{r.status}</dd>
-
-                        <dt>Route:</dt>
-                        <dd>
-                          {r.route.name} (about {r.route.expectedMiles} miles){" "}
-                          {r.route.description}
-                        </dd>
-
-                        <dt>Ride leaders:</dt>
-                        <dd>
-                          <ul>
-                            {r.leaders.map((p) => (
-                              <li key={p.id}>{p.displayName}</li>
-                            ))}
-                          </ul>
-                        </dd>
-                      </dl>
-                    </>
-                  </li>
-                ))}
-              </ul>
-            </dd>
-
-            <dt>Event Hangouts: </dt>
-            <dd>
-              {/*
-               * HangoutsList
-               */}
-              <ul>
-                {e.hangouts.map((h) => (
-                  <li key={h.id}>
-                    {/*
-                     * Hangout
-                     */}
-                    <>
-                      <div>{h.title}</div>
-                      <div>
-                        {h.meetTime} at {h.meetPlace.name}
-                      </div>
-
-                      <p>{h.description}</p>
-                    </>
-                  </li>
-                ))}
-              </ul>
-            </dd>
-          </dl>
+          <EventView groupEvent={e} />
         </li>
       ))}
     </ul>
@@ -339,47 +440,10 @@ function EventList() {
 }
 
 function Home() {
-  const announcements = [
-    {
-      id: "da7fcf43-830b-4776-9d0e-22c7902048b8",
-      submittedAt: new Date("2021-06-05 9:00"),
-      submittedBy: alice,
-      title: "Announcement 2",
-      body: "Bob Loblau Law",
-    },
-    {
-      id: "96483807-83f2-42fb-8837-ccc40910edf5",
-      submittedAt: new Date("2021-06-01 9:00"),
-      submittedBy: carol,
-      title: "Announcement 1",
-      body: "Blah blah blah blah",
-    },
-  ];
-
   return (
     <>
       <h2>Announcements</h2>
-      {/*
-       * AnouncementsList
-       */}
-      <ul>
-        {announcements.map((a) => (
-          <li key={a.id}>
-            {/*
-             * Anouncement
-             */}
-            <>
-              <div>{a.title}</div>
-              <div>
-                Submitted {a.submittedAt.toLocaleString()} by{" "}
-                {a.submittedBy.displayName}
-              </div>
-
-              <div>{a.body}</div>
-            </>
-          </li>
-        ))}
-      </ul>
+      <AnnouncementList />
 
       <h2>Upcoming Events</h2>
       <EventList />
