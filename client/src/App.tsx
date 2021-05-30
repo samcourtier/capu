@@ -298,7 +298,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename={"/capu"}>
       <Nav user={user} />
 
       <Switch>
