@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/capu/static/css/main.4b590d19.chunk.css",
-    "main.js": "/capu/static/js/main.10f40953.chunk.js",
-    "main.js.map": "/capu/static/js/main.10f40953.chunk.js.map",
+    "main.js": "/capu/static/js/main.d283d8c6.chunk.js",
+    "main.js.map": "/capu/static/js/main.d283d8c6.chunk.js.map",
     "runtime-main.js": "/capu/static/js/runtime-main.3324ecf3.js",
     "runtime-main.js.map": "/capu/static/js/runtime-main.3324ecf3.js.map",
     "static/css/2.4ebbc781.chunk.css": "/capu/static/css/2.4ebbc781.chunk.css",
@@ -18,6 +18,6 @@
     "static/css/2.4ebbc781.chunk.css",
     "static/js/2.45714a14.chunk.js",
     "static/css/main.4b590d19.chunk.css",
-    "static/js/main.10f40953.chunk.js"
+    "static/js/main.d283d8c6.chunk.js"
   ]
 }
