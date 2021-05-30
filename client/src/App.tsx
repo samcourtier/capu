@@ -1,4 +1,9 @@
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import FullCalendar from "@fullcalendar/react";
+import listPlugin from "@fullcalendar/list";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import * as api from "./api";
 
 interface NavProps {
@@ -203,6 +208,33 @@ function GroupEventList({ groupEvents }: GroupEventListProps) {
 }
 
 function GroupEventCalendar() {
+  const history = useHistory();
+  return (
+    <FullCalendar
+      plugins={[listPlugin, dayGridPlugin, interactionPlugin]}
+      headerToolbar={{
+        left: "prev,next today",
+        center: "title",
+        right: "listMonth,dayGridMonth",
+      }}
+      initialView="listMonth"
+      events={Object.values(api.rides).map((r) => ({
+        ...r,
+        start: r.meetTime,
+      }))}
+      eventContent={(eventContent) => (
+        <>
+          <b>{eventContent.timeText}</b>
+          {eventContent.event.title} (
+          {eventContent.event.extendedProps.rideLevel.name})
+        </>
+      )}
+      eventClick={(clickInfo) => history.push("/rides/" + clickInfo.event.id)}
+    />
+  );
+}
+
+function GroupEventCalendarFirstDraft() {
   return (
     <ul>
       {api.groupEventsByYMD.map((y) => (
@@ -244,8 +276,26 @@ function About() {
   return <>Cap U is such and such...</>;
 }
 
+function NoMatch() {
+  let location = useLocation();
+
+  return (
+    <div>
+      <h3>
+        No match for <code>{location.pathname}</code>
+      </h3>
+    </div>
+  );
+}
+
 function App() {
   const user = { id: "asdf", displayName: "Test User" };
+
+  const RideRoute = () => {
+    const { id } = useParams<{ id: string }>();
+    const ride = Object.values(api.rides).find((r) => r.id === id);
+    return ride ? <Ride ride={ride} /> : <NoMatch />;
+  };
 
   return (
     <Router>
@@ -254,6 +304,8 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+          <h2>First Draft of Calendar</h2>
+          <GroupEventCalendarFirstDraft />
         </Route>
 
         <Route path="/about">
@@ -262,6 +314,14 @@ function App() {
 
         <Route path="/calendar">
           <GroupEventCalendar />
+        </Route>
+
+        <Route path="/rides/:id">
+          <RideRoute />
+        </Route>
+
+        <Route path="*">
+          <NoMatch />
         </Route>
       </Switch>
     </Router>

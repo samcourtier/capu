@@ -116,7 +116,7 @@ const weatherForecasts: Record<string, WeatherForecast> = {
   },
 };
 
-interface RideLevel {
+export interface RideLevel {
   id: string;
   name: string;
 }
@@ -177,11 +177,11 @@ export type Ride = Event & {
   route: Route;
 };
 
-const rides: Record<string, Ride> = {
+export const rides: Record<string, Ride> = {
   0: {
     id: "0b3117e1-4309-4c46-84ad-bd25ecadf708",
     title: "A Mondo Ride",
-    meetTime: new Date("2021-07-01 16:30"),
+    meetTime: new Date("2021-05-01 16:30"),
     meetPlace: places["mndot"],
     description: "A ride description",
     weatherForecast: weatherForecasts[0],
@@ -193,7 +193,7 @@ const rides: Record<string, Ride> = {
   1: {
     id: "284d7258-ad88-454d-b8a6-e09589d0742e",
     title: "A Midi Ride",
-    meetTime: new Date("2021-07-01 16:45"),
+    meetTime: new Date("2021-05-01 16:45"),
     meetPlace: places["mndot"],
     weatherForecast: weatherForecasts[0],
     status: "confirmed",
@@ -240,7 +240,7 @@ export interface GroupEvent {
   hangouts: Hangout[];
 }
 
-const groupEvents: Record<string, GroupEvent> = {
+export const groupEvents: Record<string, GroupEvent> = {
   0: {
     id: "951badf6-ab50-41f5-8320-1f4ea1f437d5",
     title: "Wednesday Night Ride",
