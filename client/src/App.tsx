@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import * as api from "./api";
 
 interface NavProps {
@@ -6,15 +7,15 @@ interface NavProps {
 function Nav({ user }: NavProps) {
   return (
     <nav>
-      <a href="#!" className="text-blue-200">
+      <Link to="/" className="text-blue-200">
         [Cap U logo]
-      </a>
+      </Link>
       <ul>
         <li>
-          <a href="#!">A link</a>
+          <Link to="/about">About</Link>
         </li>
         <li>
-          <a href="#!">Another link</a>
+          <Link to="/calendar">Calendar</Link>
         </li>
       </ul>
 
@@ -233,9 +234,8 @@ function Home() {
     <>
       <h2>Announcements</h2>
       <AnnouncementList />
-
-      <h2>Event Calendar</h2>
-      <GroupEventCalendar />
+      <h2>Upcoming events</h2>
+      [Some abbreviated version of the event calendar]
     </>
   );
 }
@@ -248,15 +248,23 @@ function App() {
   const user = { id: "asdf", displayName: "Test User" };
 
   return (
-    <>
+    <Router>
       <Nav user={user} />
 
-      <h1>Home Page</h1>
-      <Home />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
 
-      <h1>About Page</h1>
-      <About />
-    </>
+        <Route path="/about">
+          <About />
+        </Route>
+
+        <Route path="/calendar">
+          <GroupEventCalendar />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
