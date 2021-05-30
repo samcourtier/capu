@@ -1,20 +1,23 @@
 {
   "files": {
     "main.css": "/capu/static/css/main.4b590d19.chunk.css",
-    "main.js": "/capu/static/js/main.78a4867c.chunk.js",
-    "main.js.map": "/capu/static/js/main.78a4867c.chunk.js.map",
+    "main.js": "/capu/static/js/main.10f40953.chunk.js",
+    "main.js.map": "/capu/static/js/main.10f40953.chunk.js.map",
     "runtime-main.js": "/capu/static/js/runtime-main.3324ecf3.js",
     "runtime-main.js.map": "/capu/static/js/runtime-main.3324ecf3.js.map",
-    "static/js/2.bdff26c8.chunk.js": "/capu/static/js/2.bdff26c8.chunk.js",
-    "static/js/2.bdff26c8.chunk.js.map": "/capu/static/js/2.bdff26c8.chunk.js.map",
+    "static/css/2.4ebbc781.chunk.css": "/capu/static/css/2.4ebbc781.chunk.css",
+    "static/js/2.45714a14.chunk.js": "/capu/static/js/2.45714a14.chunk.js",
+    "static/js/2.45714a14.chunk.js.map": "/capu/static/js/2.45714a14.chunk.js.map",
     "index.html": "/capu/index.html",
+    "static/css/2.4ebbc781.chunk.css.map": "/capu/static/css/2.4ebbc781.chunk.css.map",
     "static/css/main.4b590d19.chunk.css.map": "/capu/static/css/main.4b590d19.chunk.css.map",
-    "static/js/2.bdff26c8.chunk.js.LICENSE.txt": "/capu/static/js/2.bdff26c8.chunk.js.LICENSE.txt"
+    "static/js/2.45714a14.chunk.js.LICENSE.txt": "/capu/static/js/2.45714a14.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.3324ecf3.js",
-    "static/js/2.bdff26c8.chunk.js",
+    "static/css/2.4ebbc781.chunk.css",
+    "static/js/2.45714a14.chunk.js",
     "static/css/main.4b590d19.chunk.css",
-    "static/js/main.78a4867c.chunk.js"
+    "static/js/main.10f40953.chunk.js"
   ]
 }
