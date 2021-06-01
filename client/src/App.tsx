@@ -162,7 +162,7 @@ function RideForm({ ride }: RideFormProps) {
 
           <label htmlFor="ride-level">Ride Level</label>
           <Field as="select" id="ride-level" name="rideLevel.id">
-            {api.fetchStatuses().map(({ id, name }) => (
+            {api.fetchRideLevels().map(({ id, name }) => (
               <option key={id} value={id}>
                 {name}
               </option>
