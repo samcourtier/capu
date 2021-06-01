@@ -2,9 +2,6 @@
 // NOTE: There are bunch of examples in here that don't have interfaces yet
 
 // UUID v4 reservoir for examples:
-// 01d3586b-cc73-4672-9669-71e504abbd7d
-// 8d50e334-dbec-4fb7-a46e-04ee4ece0311
-// e014a8c5-e245-48a4-848c-a095d210bae6
 // feeefbe9-e009-45cc-ae51-df39fed4bdc4
 // 05a36b1d-0abd-4252-904f-048209aff2c1
 // 1a5dc8e0-7f29-4df8-a554-666db632ccac
@@ -36,12 +33,22 @@
 // 0aa75cda-d64f-451c-9e8b-bdcde384b9d9
 // 989adfe6-bf11-4770-ae6e-6f1656006c7f
 
-export interface User {
+interface Entity {
   id: string;
+}
+
+export function fetchTs<T extends Entity>(examples: Record<string, T>) {
+  return () => Object.values(examples);
+}
+export function fetchTByID<T extends Entity>(examples: Record<string, T>) {
+  return (id: string) => Object.values(examples).find((o: T) => o.id === id);
+}
+
+export interface User extends Entity {
   displayName: string;
 }
 
-const users: Record<string, User> = {
+export const users: Record<string, User> = {
   alice: {
     id: "191315df-2a80-46f6-977c-058b5a8719c5",
     displayName: "Alice A",
@@ -56,8 +63,10 @@ const users: Record<string, User> = {
   },
 };
 
-export interface Announcement {
-  id: string;
+export const fetchUsers = fetchTs(users);
+export const fetchUserById = fetchTByID(users);
+
+export interface Announcement extends Entity {
   submittedAt: Date;
   submittedBy: User;
   title: string;
@@ -81,8 +90,9 @@ export const announcements: Record<string, Announcement> = {
   },
 };
 
-interface Place {
-  id: string;
+export const fetchAnnouncements = fetchTs(announcements);
+
+interface Place extends Entity {
   name: string;
 }
 
@@ -93,6 +103,8 @@ const places: Record<string, Place> = {
     // Also, prob. a link to Google Maps or something
   },
 };
+
+export const fetchPlaces = fetchTs(places);
 
 interface WeatherForecast {
   sky: string;
@@ -116,12 +128,11 @@ const weatherForecasts: Record<string, WeatherForecast> = {
   },
 };
 
-export interface RideLevel {
-  id: string;
+export interface RideLevel extends Entity {
   name: string;
 }
 
-const rideLevel: Record<string, RideLevel> = {
+const rideLevels: Record<string, RideLevel> = {
   mondo: {
     id: "08508be8-7850-4792-a7af-3b47fb1e6e6e",
     name: "Mondo",
@@ -132,8 +143,9 @@ const rideLevel: Record<string, RideLevel> = {
   },
 };
 
-interface Route {
-  id: string;
+export const fetchRideLevels = fetchTs(rideLevels);
+
+interface Route extends Entity {
   name: string;
   description: string;
   expectedMiles: number;
@@ -158,20 +170,46 @@ const routes: Record<string, Route> = {
   },
 };
 
-type Event = {
+export const fetchRoutes = fetchTs(routes);
+
+type Event = Entity & {
   // An abstract event -- cf. a GroupEvent which is defined below
-  id: string;
   title: string;
   meetPlace: Place;
   description: string;
 } & (
-  | { meetTime: Date; meetTimeDescription?: never }
-  | { meetTime?: never; meetTimeDescription: string }
-);
+    | { meetTime: Date; meetTimeDescription?: never }
+    | { meetTime?: never; meetTimeDescription: string }
+  );
+
+export interface Status extends Entity {
+  name: string;
+  description: string;
+}
+
+export const statuses: Record<string, Status> = {
+  planned: {
+    id: "01d3586b-cc73-4672-9669-71e504abbd7d",
+    name: "Planned",
+    description: "asdfad",
+  },
+  tentative: {
+    id: "8d50e334-dbec-4fb7-a46e-04ee4ece0311",
+    name: "Tentative",
+    description: "fdsa",
+  },
+  canceled: {
+    id: "e014a8c5-e245-48a4-848c-a095d210bae6",
+    name: "Canceled",
+    description: "qwer",
+  },
+};
+
+export const fetchStatuses = fetchTs(statuses);
 
 export type Ride = Event & {
   weatherForecast: WeatherForecast;
-  status: "planned" | "tentative" | "confirmed";
+  status: Status;
   rideLevel: RideLevel;
   leaders: User[];
   route: Route;
@@ -185,8 +223,8 @@ export const rides: Record<string, Ride> = {
     meetPlace: places["mndot"],
     description: "A ride description",
     weatherForecast: weatherForecasts[0],
-    status: "tentative",
-    rideLevel: rideLevel["mondo"],
+    status: statuses["tentative"],
+    rideLevel: rideLevels["mondo"],
     leaders: [users["alice"], users["bob"]],
     route: routes[0],
   },
@@ -196,13 +234,16 @@ export const rides: Record<string, Ride> = {
     meetTime: new Date("2021-05-01 16:45"),
     meetPlace: places["mndot"],
     weatherForecast: weatherForecasts[0],
-    status: "confirmed",
+    status: statuses["canceled"],
     description: "Another ride description",
-    rideLevel: rideLevel["midi"],
+    rideLevel: rideLevels["midi"],
     leaders: [users["carol"]],
     route: routes[1],
   },
 };
+
+export const fetchRides = fetchTs(rides);
+export const fetchRideById = fetchTByID(rides);
 
 export type Hangout = Event & {};
 
@@ -219,7 +260,7 @@ const hangouts: Record<string, Hangout> = {
   },
 };
 
-interface Series {
+interface Series extends Entity {
   id: string;
   name: string;
   description?: string;
@@ -232,7 +273,7 @@ const series: Record<string, Series> = {
   },
 };
 
-export interface GroupEvent {
+export interface GroupEvent extends Entity {
   id: string;
   title: string;
   series: Series;
@@ -257,6 +298,8 @@ export const groupEvents: Record<string, GroupEvent> = {
   },
   // TODO: delete the copypasta + more event examples (e.g. Prudhomme)
 };
+
+export const fetchGroupEvents = fetchTs(groupEvents);
 
 export const groupEventsByYMD = [
   {

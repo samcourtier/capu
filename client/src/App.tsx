@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useHistory, useLocation, useParams } from "react-router-dom";
+import { Formik, Form, Field, FieldArray } from "formik";
 import FullCalendar from "@fullcalendar/react";
 import listPlugin from "@fullcalendar/list";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -58,7 +59,7 @@ function Announcement({ announcement }: AnnouncementProps) {
 function AnnouncementList() {
   return (
     <ul>
-      {Object.values(api.announcements).map((a) => (
+      {api.fetchAnnouncements().map((a) => (
         <li key={a.id}>
           <Announcement announcement={a} />
         </li>
@@ -89,7 +90,7 @@ function Ride({ ride }: RideProps) {
 
       <dl>
         <dt>Status:</dt>
-        <dd>{ride.status}</dd>
+        <dd>{ride.status.name}</dd>
 
         <dt>Route:</dt>
         <dd>
@@ -114,6 +115,106 @@ function Ride({ ride }: RideProps) {
         </dd>
       </dl>
     </>
+  );
+}
+
+interface RideFormProps {
+  ride: api.Ride;
+}
+function RideForm({ ride }: RideFormProps) {
+  return (
+    <Formik
+      initialValues={ride}
+      onSubmit={(values, actions) => {
+        console.log({ values, actions });
+        alert(JSON.stringify(values, null, 2));
+        actions.setSubmitting(false);
+      }}
+    >
+      {({ values }) => (
+        <Form>
+          <label htmlFor="title">Title</label>
+          <Field id="title" name="title" />
+
+          <label htmlFor="meet-time">Meet time</label>
+          <Field type="datetime-local" id="meet-time" name="meetTime" />
+
+          <label htmlFor="meet-place">Meet place</label>
+          <Field as="select" id="meet-place" name="meetPlace.id">
+            {api.fetchPlaces().map(({ id, name }) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </Field>
+
+          <label htmlFor="description">Description</label>
+          <Field as="textarea" id="description" name="description" />
+
+          <label htmlFor="status">Status</label>
+          <Field as="select" id="status" name="status.id">
+            {api.fetchStatuses().map(({ id, name }) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </Field>
+
+          <label htmlFor="ride-level">Ride Level</label>
+          <Field as="select" id="ride-level" name="rideLevel.id">
+            {api.fetchStatuses().map(({ id, name }) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </Field>
+
+          <FieldArray name="leaders">
+            {({ remove, push }) => {
+              return (
+                <div>
+                  <label htmlFor="add-leader">Add a leader</label>
+                  <select
+                    id="add-leader"
+                    onChange={(e) => push(api.fetchUserById(e.target.value))}
+                  >
+                    <option />
+                    {api
+                      .fetchUsers()
+                      .filter(
+                        ({ id }) => !values.leaders.find((v) => v.id === id)
+                      )
+                      .map(({ id, displayName }) => (
+                        <option key={id} value={id}>
+                          {displayName}
+                        </option>
+                      ))}
+                  </select>
+                  {values.leaders.map(({ id, displayName }, i) => (
+                    <li key={id}>
+                      <label htmlFor={`values.${i}.id`}>{displayName}</label>
+                      <Field name={`values.${i}.id`} hidden />
+                      <button onClick={() => remove(i)}>X</button>
+                    </li>
+                  ))}
+                </div>
+              );
+            }}
+          </FieldArray>
+
+          <label htmlFor="route">Route</label>
+          <Field as="select" id="route" name="route.id">
+            {api.fetchRoutes().map(({ id, name }) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </Field>
+
+          <button type="submit">Submit</button>
+        </Form>
+      )}
+    </Formik>
   );
 }
 
@@ -198,7 +299,7 @@ interface GroupEventListProps {
 function GroupEventList({ groupEvents }: GroupEventListProps) {
   return (
     <ul>
-      {Object.values(groupEvents).map((e) => (
+      {groupEvents.map((e) => (
         <li key={e.id}>
           <GroupEvent groupEvent={e} />
         </li>
@@ -218,7 +319,7 @@ function GroupEventCalendar() {
         right: "listMonth,dayGridMonth",
       }}
       initialView="listMonth"
-      events={Object.values(api.rides).map((r) => ({
+      events={api.fetchRides().map((r) => ({
         ...r,
         start: r.meetTime,
       }))}
@@ -293,7 +394,7 @@ function App() {
 
   const RideRoute = () => {
     const { id } = useParams<{ id: string }>();
-    const ride = Object.values(api.rides).find((r) => r.id === id);
+    const ride = api.fetchRideById(id);
     return ride ? <Ride ride={ride} /> : <NoMatch />;
   };
 
@@ -304,6 +405,10 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+
+          <h2>Add ride form draft</h2>
+          <RideForm ride={api.rides[0]} />
+
           <h2>First Draft of Calendar</h2>
           <GroupEventCalendarFirstDraft />
         </Route>
