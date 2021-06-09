@@ -6,6 +6,26 @@ import listPlugin from "@fullcalendar/list";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import * as api from "./api";
+import { useEffect, useState } from "react";
+
+function useFetcher<T>(fetcher: () => Promise<T[]>): T[];
+function useFetcher<T>(fetcher: (id: string) => Promise<T>, id: string): T;
+function useFetcher<T>(fetcher: any, id?: string): any {
+  const [result, setResult] = useState<T | T[] | null>(
+    id === undefined ? [] : null
+  );
+
+  useEffect(() => {
+    const fetch = async () => {
+      id === undefined
+        ? setResult(await fetcher())
+        : setResult(await fetcher(id));
+    };
+    fetch();
+  }, [fetcher, id]);
+
+  return result;
+}
 
 interface NavProps {
   user: api.User | null;
@@ -57,9 +77,11 @@ function Announcement({ announcement }: AnnouncementProps) {
 }
 
 function AnnouncementList() {
+  const announcements = useFetcher(api.fetchAnnouncements);
+
   return (
     <ul>
-      {api.fetchAnnouncements().map((a) => (
+      {announcements.map((a) => (
         <li key={a.id}>
           <Announcement announcement={a} />
         </li>
@@ -122,11 +144,20 @@ interface RideFormProps {
   ride: api.Ride;
 }
 function RideForm({ ride }: RideFormProps) {
+  const places = useFetcher(api.fetchPlaces);
+  const statuses = useFetcher(api.fetchStatuses);
+  const rideLevels = useFetcher(api.fetchRideLevels);
+  const routes = useFetcher(api.fetchRoutes);
+  const users = useFetcher(api.fetchUsers);
+  const usersById = users.reduce((obj, u) => {
+    obj[u.id] = u;
+    return obj;
+  }, {} as Record<string, api.User>);
+
   return (
     <Formik
       initialValues={ride}
       onSubmit={(values, actions) => {
-        console.log({ values, actions });
         alert(JSON.stringify(values, null, 2));
         actions.setSubmitting(false);
       }}
@@ -141,7 +172,7 @@ function RideForm({ ride }: RideFormProps) {
 
           <label htmlFor="meet-place">Meet place</label>
           <Field as="select" id="meet-place" name="meetPlace.id">
-            {api.fetchPlaces().map(({ id, name }) => (
+            {places.map(({ id, name }) => (
               <option key={id} value={id}>
                 {name}
               </option>
@@ -153,7 +184,7 @@ function RideForm({ ride }: RideFormProps) {
 
           <label htmlFor="status">Status</label>
           <Field as="select" id="status" name="status.id">
-            {api.fetchStatuses().map(({ id, name }) => (
+            {statuses.map(({ id, name }) => (
               <option key={id} value={id}>
                 {name}
               </option>
@@ -162,7 +193,7 @@ function RideForm({ ride }: RideFormProps) {
 
           <label htmlFor="ride-level">Ride Level</label>
           <Field as="select" id="ride-level" name="rideLevel.id">
-            {api.fetchRideLevels().map(({ id, name }) => (
+            {rideLevels.map(({ id, name }) => (
               <option key={id} value={id}>
                 {name}
               </option>
@@ -176,11 +207,10 @@ function RideForm({ ride }: RideFormProps) {
                   <label htmlFor="add-leader">Add a leader</label>
                   <select
                     id="add-leader"
-                    onChange={(e) => push(api.fetchUserById(e.target.value))}
+                    onChange={(e) => push(usersById[e.target.value])}
                   >
                     <option />
-                    {api
-                      .fetchUsers()
+                    {users
                       .filter(
                         ({ id }) => !values.leaders.find((v) => v.id === id)
                       )
@@ -204,7 +234,7 @@ function RideForm({ ride }: RideFormProps) {
 
           <label htmlFor="route">Route</label>
           <Field as="select" id="route" name="route.id">
-            {api.fetchRoutes().map(({ id, name }) => (
+            {routes.map(({ id, name }) => (
               <option key={id} value={id}>
                 {name}
               </option>
@@ -310,6 +340,8 @@ function GroupEventList({ groupEvents }: GroupEventListProps) {
 
 function GroupEventCalendar() {
   const history = useHistory();
+  const rides = useFetcher(api.fetchRides);
+
   return (
     <FullCalendar
       plugins={[listPlugin, dayGridPlugin, interactionPlugin]}
@@ -319,7 +351,7 @@ function GroupEventCalendar() {
         right: "listMonth,dayGridMonth",
       }}
       initialView="listMonth"
-      events={api.fetchRides().map((r) => ({
+      events={rides.map((r) => ({
         ...r,
         start: r.meetTime,
       }))}
@@ -394,7 +426,7 @@ function App() {
 
   const RideRoute = () => {
     const { id } = useParams<{ id: string }>();
-    const ride = api.fetchRideById(id);
+    const ride = useFetcher(api.fetchRideById, id);
     return ride ? <Ride ride={ride} /> : <NoMatch />;
   };
 

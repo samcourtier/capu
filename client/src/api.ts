@@ -1,3 +1,6 @@
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+
 // Models and examples
 // NOTE: There are bunch of examples in here that don't have interfaces yet
 
@@ -33,15 +36,39 @@
 // 0aa75cda-d64f-451c-9e8b-bdcde384b9d9
 // 989adfe6-bf11-4770-ae6e-6f1656006c7f
 
+const mockAPI = new MockAdapter(axios, { delayResponse: 2000 });
+
 interface Entity {
   id: string;
 }
 
-export function fetchTs<T extends Entity>(examples: Record<string, T>) {
-  return () => Object.values(examples);
+// Some helper functions for simulating remote request loops in development
+
+export function fetchTs<T extends Entity>(
+  examples: Record<string, T>,
+  url: string
+) {
+  const fullURL = `/api${url}`;
+  mockAPI.onGet(fullURL).reply(200, Object.values(examples));
+  return async () => {
+    return (await axios.get<T[]>(fullURL)).data;
+  };
 }
-export function fetchTByID<T extends Entity>(examples: Record<string, T>) {
-  return (id: string) => Object.values(examples).find((o: T) => o.id === id);
+
+export function fetchTById<T extends Entity>(
+  examples: Record<string, T>,
+  url: string
+) {
+  const matcher = new RegExp(`\\/api${"\\" + url}\\/(.+)`);
+  mockAPI.onGet(matcher).reply((config) => {
+    const match = config.url?.match(matcher);
+    if (!match) {
+      return [404];
+    }
+    const id = match[1];
+    return [200, Object.values(examples).find((o: T) => o.id === id)];
+  });
+  return async (id: string) => (await axios.get<T>(`/api${url}/${id}`)).data;
 }
 
 export interface User extends Entity {
@@ -63,8 +90,10 @@ export const users: Record<string, User> = {
   },
 };
 
-export const fetchUsers = fetchTs(users);
-export const fetchUserById = fetchTByID(users);
+mockAPI.onGet("/users").reply(200, Object.values(users));
+
+export const fetchUsers = fetchTs(users, "/users");
+export const fetchUserById = fetchTById(users, "/users");
 
 export interface Announcement extends Entity {
   submittedAt: Date;
@@ -90,9 +119,9 @@ export const announcements: Record<string, Announcement> = {
   },
 };
 
-export const fetchAnnouncements = fetchTs(announcements);
+export const fetchAnnouncements = fetchTs(announcements, "/announcements");
 
-interface Place extends Entity {
+export interface Place extends Entity {
   name: string;
 }
 
@@ -104,7 +133,7 @@ const places: Record<string, Place> = {
   },
 };
 
-export const fetchPlaces = fetchTs(places);
+export const fetchPlaces = fetchTs(places, "/places");
 
 interface WeatherForecast {
   sky: string;
@@ -143,9 +172,9 @@ const rideLevels: Record<string, RideLevel> = {
   },
 };
 
-export const fetchRideLevels = fetchTs(rideLevels);
+export const fetchRideLevels = fetchTs(rideLevels, "/ride-levels");
 
-interface Route extends Entity {
+export interface Route extends Entity {
   name: string;
   description: string;
   expectedMiles: number;
@@ -170,7 +199,7 @@ const routes: Record<string, Route> = {
   },
 };
 
-export const fetchRoutes = fetchTs(routes);
+export const fetchRoutes = fetchTs(routes, "/routes");
 
 type Event = Entity & {
   // An abstract event -- cf. a GroupEvent which is defined below
@@ -205,7 +234,7 @@ export const statuses: Record<string, Status> = {
   },
 };
 
-export const fetchStatuses = fetchTs(statuses);
+export const fetchStatuses = fetchTs(statuses, "/statuses");
 
 export type Ride = Event & {
   weatherForecast: WeatherForecast;
@@ -242,8 +271,8 @@ export const rides: Record<string, Ride> = {
   },
 };
 
-export const fetchRides = fetchTs(rides);
-export const fetchRideById = fetchTByID(rides);
+export const fetchRides = fetchTs(rides, "/rides");
+export const fetchRideById = fetchTById(rides, "/rides");
 
 export type Hangout = Event & {};
 
@@ -299,7 +328,7 @@ export const groupEvents: Record<string, GroupEvent> = {
   // TODO: delete the copypasta + more event examples (e.g. Prudhomme)
 };
 
-export const fetchGroupEvents = fetchTs(groupEvents);
+export const fetchGroupEvents = fetchTs(groupEvents, "/group-events");
 
 export const groupEventsByYMD = [
   {
