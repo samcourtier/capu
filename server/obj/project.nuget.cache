@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "GOSigrc6r1v1HBl8BeNKGkDrS/t57an0MP7q8k0rVcNY6qxIazjeBNPcJrV7v/UFLElyUMhpVe5sTmx0u+ebyw==",
+  "success": true,
+  "projectFilePath": "/home/courtiesg/capu/server/server.csproj",
+  "expectedPackageFiles": [
+    "/home/courtiesg/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/home/courtiesg/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/home/courtiesg/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "/home/courtiesg/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "/home/courtiesg/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "/home/courtiesg/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
