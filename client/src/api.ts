@@ -36,7 +36,10 @@ import MockAdapter from "axios-mock-adapter";
 // 0aa75cda-d64f-451c-9e8b-bdcde384b9d9
 // 989adfe6-bf11-4770-ae6e-6f1656006c7f
 
-const mockAPI = new MockAdapter(axios, { delayResponse: 2000 });
+const mockAPI = new MockAdapter(axios, {
+  onNoMatch: "passthrough",
+  delayResponse: 2000,
+});
 
 interface Entity {
   id: string;
@@ -46,10 +49,11 @@ interface Entity {
 
 export function fetchTs<T extends Entity>(
   examples: Record<string, T>,
-  url: string
+  url: string,
+  mock: boolean = true
 ) {
   const fullURL = `/api${url}`;
-  mockAPI.onGet(fullURL).reply(200, Object.values(examples));
+  mock && mockAPI.onGet(fullURL).reply(200, Object.values(examples));
   return async () => {
     return (await axios.get<T[]>(fullURL)).data;
   };
@@ -57,17 +61,19 @@ export function fetchTs<T extends Entity>(
 
 export function fetchTById<T extends Entity>(
   examples: Record<string, T>,
-  url: string
+  url: string,
+  mock: boolean = true
 ) {
   const matcher = new RegExp(`\\/api${"\\" + url}\\/(.+)`);
-  mockAPI.onGet(matcher).reply((config) => {
-    const match = config.url?.match(matcher);
-    if (!match) {
-      return [404];
-    }
-    const id = match[1];
-    return [200, Object.values(examples).find((o: T) => o.id === id)];
-  });
+  mock &&
+    mockAPI.onGet(matcher).reply((config) => {
+      const match = config.url?.match(matcher);
+      if (!match) {
+        return [404];
+      }
+      const id = match[1];
+      return [200, Object.values(examples).find((o: T) => o.id === id)];
+    });
   return async (id: string) => (await axios.get<T>(`/api${url}/${id}`)).data;
 }
 
@@ -90,9 +96,8 @@ export const users: Record<string, User> = {
   },
 };
 
-mockAPI.onGet("/users").reply(200, Object.values(users));
-
 export const fetchUsers = fetchTs(users, "/users");
+// export const fetchUsers = fetchTs(users, "/Users", false);
 export const fetchUserById = fetchTById(users, "/users");
 
 export interface Announcement extends Entity {
