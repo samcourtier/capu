@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+  db:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=capu
+      - POSTGRES_PASSWORD=capu
+      - POSTGRES_DB=capu
+
+  admin:
+    image: adminer
+    ports:
+      - 8080:8080
+
   server:
     build:
       context: ./server
