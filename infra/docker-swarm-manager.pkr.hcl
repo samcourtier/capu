@@ -7,8 +7,10 @@ packer {
   }
 }
 
+variable "ami_name" {}
+
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "docker-swarm-mode-manager-node"
+  ami_name      = var.ami_name
   instance_type = "t2.micro"
   region        = "us-east-2"
 

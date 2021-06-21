@@ -1,0 +1,1 @@
+ami_name = "docker-swarm-manager"

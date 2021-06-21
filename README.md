@@ -27,9 +27,12 @@ Stuff not working (especially after pulling)? Try:
 
 ## TODO(SGC)
 
-* NEXT: Provision new Docker Swarm AWS AMI w/ Terraform
-* Write docker-compose.prod.yml (inc. Traefik)
-* Deploy (inc. DNS updates)
-  * NOTE: Hide everything behind a WIP message
-* CI/CD
+* NEXT: Try to register capu.club, capitolunited.org, capu.org after AWS figures out why my billing info is too broken to register domain names but not broken enough to charge me monthly.
+* NEXT: Setup EC2 instance connect
+
+* Test new DNS/EC2 config
+  * Jump into the instance, get a simple app listening on 80, and make sure capitolunited.club resolves
+* Setup CI/CD (probably GitHub runner)
+* Setup Traefik
+* Deploy WIP app
 * Look into Open API codegen for back-to-front compile-time type-checking
