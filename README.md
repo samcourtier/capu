@@ -27,11 +27,8 @@ Stuff not working (especially after pulling)? Try:
 
 ## TODO(SGC)
 
-* NEXT: Try to register capu.club, capitolunited.org, capu.org after AWS figures out why my billing info is too broken to register domain names but not broken enough to charge me monthly.
-
-* NEXT: Test new DNS/EC2 config
-
 * Setup CI/CD (probably GitHub runner)
+* Test new DNS/EC2 config after the DNS records have had a couple days to propagate
 * Setup Traefik
 * Deploy WIP app
 * Setup DB persistence and backups
