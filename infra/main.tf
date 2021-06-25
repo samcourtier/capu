@@ -16,8 +16,10 @@ provider "aws" {
 
 # VM setup
 
-variable "public_key_path" {}
 variable "ami_name" {}
+variable "public_key_path" {
+  default = "~/.ssh/id_rsa.pub"
+}
 
 data "aws_ami" "docker_swarm_manager" {
   most_recent = true
@@ -75,14 +77,9 @@ resource "aws_security_group" "server" {
   }
 }
 
-resource "aws_key_pair" "server" {
-  public_key = file(var.public_key_path)
-}
-
 resource "aws_instance" "server" {
   ami             = data.aws_ami.docker_swarm_manager.id
   instance_type   = "t2.micro"
-  key_name        = aws_key_pair.server.id
   security_groups = [aws_security_group.server.name]
 
   tags = {

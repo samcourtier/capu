@@ -28,7 +28,7 @@ Stuff not working (especially after pulling)? Try:
 ## TODO(SGC)
 
 * NEXT: Setup CI/CD
-  * I was hoping to use a self-hosted GitHub runner for this, but that won't be possible since this is a public repo. Instead I'll probably have to make a key pair, add the public key to the VM's authorized_keys, put the private key in GitHub secrets, and run a script over SSH (ssh user@remotehost "bash -s" < local_script.sh) for cloning, building, testing, deploying. I'll also have to make another key pair on the VM and get the public key on GitHub for cloning.
+  * SSH script (ssh user@remotehost "bash -s" < local_script.sh) for cloning, building, testing, deploying.
 
 * Setup Traefik
   * Make sure urls are rewritten to capitolunited.org

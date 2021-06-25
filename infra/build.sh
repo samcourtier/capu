@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-packer validate .
-packer build -force -var-file="variables.hcl" docker-swarm-manager.pkr.hcl
+packer validate -var-file="shared-variables.hcl" .
+packer build -force -var-file="shared-variables.hcl" docker-swarm-manager.pkr.hcl

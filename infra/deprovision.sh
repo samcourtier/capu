@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-terraform destroy -var-file="variables.hcl"
+terraform destroy -var-file="shared-variables.hcl"

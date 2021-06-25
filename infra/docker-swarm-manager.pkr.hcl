@@ -9,6 +9,18 @@ packer {
 
 variable "ami_name" {}
 
+variable "public_key_path" {
+  default = "~/.ssh/id_ed25519.pub"
+}
+
+variable "github_private_key_path" {
+  default = "./github-keys/id_ed25519"
+}
+
+variable "github_public_key_path" {
+  default = "./github-keys/id_ed25519.pub"
+}
+
 source "amazon-ebs" "ubuntu" {
   ami_name      = var.ami_name
   instance_type = "t2.micro"
@@ -31,7 +43,17 @@ build {
     "source.amazon-ebs.ubuntu"
   ]
 
+  provisioner "file" {
+    source      = var.github_private_key_path
+    destination = "~/.ssh/id_ed25519"
+  }
+
   provisioner "shell" {
+    environment_vars = [
+      "PUBLIC_KEY=${file(var.public_key_path)}",
+      "GITHUB_PUBLIC_KEY=${file(var.github_public_key_path)}"
+    ]
+
     inline = [
       "echo Updating packages...",
       "sudo apt-get update",
@@ -48,6 +70,11 @@ build {
 
       "echo Initializing Docker Swarm...",
       "sudo docker swarm init",
+
+      "echo Adding public keys...",
+      "mkdir -p ~/.ssh",
+      "echo $PUBLIC_KEY >> ~/.ssh/authorized_keys",
+      "echo $GITHUB_PUBLIC_KEY >> ~/.ssh/authorized_keys",
 
       "echo Done."
     ]
