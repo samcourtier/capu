@@ -14,19 +14,17 @@ provider "aws" {
   region  = "us-east-2"
 }
 
+
+variable "server_ami_name" {}
+
 # VM setup
 
-variable "ami_name" {}
-variable "public_key_path" {
-  default = "~/.ssh/id_rsa.pub"
-}
-
-data "aws_ami" "docker_swarm_manager" {
+data "aws_ami" "server" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = [var.ami_name]
+    values = [var.server_ami_name]
   }
 
   owners = ["self"]
@@ -77,22 +75,22 @@ resource "aws_security_group" "server" {
   }
 }
 
-resource "aws_instance" "server" {
-  ami             = data.aws_ami.docker_swarm_manager.id
+resource "aws_instance" "prod" {
+  ami             = data.aws_ami.server.id
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.server.name]
 
   tags = {
-    Name = "CapU"
+    Name = "Cap U - Prod"
   }
 }
 
-resource "aws_eip" "server" {
-  instance = aws_instance.server.id
+resource "aws_eip" "prod" {
+  instance = aws_instance.prod.id
 }
 
-output "elastic_ip" {
-  value = aws_eip.server.public_ip
+output "prod_ip" {
+  value = aws_eip.prod.public_ip
 }
 
 # DNS setup
@@ -130,7 +128,7 @@ resource "aws_route53_record" "a" {
   ttl     = 300
   zone_id = aws_route53_zone.zone[each.key].zone_id
 
-  records = [aws_eip.server.public_ip]
+  records = [aws_eip.prod.public_ip]
 }
 
 resource "aws_route53_record" "www" {
@@ -141,5 +139,5 @@ resource "aws_route53_record" "www" {
   ttl     = 300
   zone_id = aws_route53_zone.zone[each.key].zone_id
 
-  records = [aws_eip.server.public_ip]
+  records = [aws_eip.prod.public_ip]
 }

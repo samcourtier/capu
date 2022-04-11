@@ -1,0 +1,16 @@
+[Unit]
+Description=Certbot Initializer
+After=nginx.service
+ConditionPathExists=!/etc/letsencrypt/live/capitolunited.org
+
+[Service]
+Type=oneshot
+ExecStart=/snap/bin/certbot \
+    --non-interactive \
+    --agree-tos \
+    --nginx \
+    -m samcourtier@gmail.com \
+    -d capitolunited.org,capitolunited.club,capu.club \
+    --redirect
+[Install]
+WantedBy=multi-user.target
