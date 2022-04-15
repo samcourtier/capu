@@ -11,6 +11,7 @@ ExecStart=/snap/bin/certbot \
     --nginx \
     -m samcourtier@gmail.com \
     -d capitolunited.org,capitolunited.club,capu.club \
+    -d www.capitolunited.org,www.capitolunited.club,www.capu.club \
     --redirect
 [Install]
 WantedBy=multi-user.target

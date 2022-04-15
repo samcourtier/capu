@@ -5,3 +5,4 @@
 variables.hcl
 
 server-keys
+secret_key.txt
