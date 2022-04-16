@@ -139,5 +139,5 @@ resource "aws_route53_record" "www" {
   ttl     = 300
   zone_id = aws_route53_zone.zone[each.key].zone_id
 
-  records = [aws_eip.prod.public_ip]
+  records = [each.key]
 }
