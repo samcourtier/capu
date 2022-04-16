@@ -8,11 +8,11 @@ After=network.target
 [Service]
 Type=notify
 # the specific user that our service will run as
-User=ubuntu
-Group=ubuntu
+User=capu
+Group=capu
 RuntimeDirectory=gunicorn
-WorkingDirectory=/home/ubuntu/capu
-ExecStart=/home/ubuntu/.local/bin/gunicorn capu.wsgi:application
+WorkingDirectory=/home/capu/
+ExecStart=/usr/local/bin/gunicorn capu.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
 TimeoutStopSec=5

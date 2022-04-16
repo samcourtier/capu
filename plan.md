@@ -1,6 +1,6 @@
 # Plan
 
-- [ ] Run server with dedicated capu user instead of ubuntu
+- [ ] Set up database backups
 - [ ] Serve placeholder page from Django instead of NGINX
 - [ ] Set up admin site
 - [ ] Create basic calendar
@@ -23,7 +23,6 @@
       - attributes
       - event_close
     - EventClose
-      - event_id
       - body
       - attributes
     - EventAttribute
@@ -35,9 +34,11 @@
 
 - [ ] Terraform remote state on S3
 - [ ] Increase SECURE_HSTS_SECONDS to 31536000 when site is stable
+- [ ] cron job for pulling from main
 
 ## Done
 
+- [x] Run server with dedicated capu user instead of ubuntu
 - [x] Wire up NGINX - Gunicorn - Django + firewall
 - [x] Set up Django with Postgres
 - [x] Set up NGINX server w/ HTTPS
