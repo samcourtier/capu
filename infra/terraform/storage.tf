@@ -12,9 +12,10 @@ resource "aws_ebs_volume" "data_prod" {
 }
 
 resource "aws_volume_attachment" "data_prod" {
-  device_name = "/dev/sdf"
-  volume_id   = aws_ebs_volume.data_prod.id
-  instance_id = aws_instance.prod.id
+  device_name                    = "/dev/sdf"
+  volume_id                      = aws_ebs_volume.data_prod.id
+  instance_id                    = aws_instance.prod.id
+  stop_instance_before_detaching = true
 }
 
 resource "aws_s3_bucket" "backups" {
