@@ -37,9 +37,16 @@ build {
     destination = "id_ed25519.pub"
   }
 
+  # Various deployment files, inc. placeholder directory for capu source
   provisioner "file" {
     source = "files/"
     destination = "."
+  }
+
+  # Python source
+  provisioner "file" {
+    source = "../../capu/"
+    destination = "capu"
   }
 
   provisioner "shell" {

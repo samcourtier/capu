@@ -37,19 +37,20 @@ sudo pip3 install psycopg2 gunicorn Django
 
 echo "Initializing capu user..."
 sudo adduser --disabled-password --gecos "" capu
-sudo chown capu:capu settings.py secret_key.txt
+sudo chown capu:capu -R capu settings.py secret_key.txt
 
 echo "Initializing capu Django project..."
-sudo -u capu django-admin startproject capu /home/capu/
+# sudo -u capu django-admin startproject capu /home/capu/
+sudo rsync -a capu/ /home/capu/
 sudo mv settings.py /home/capu/capu/
 sudo mv secret_key.txt /home/capu/
 sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
-sudo -u capu python3 /home/capu/manage.py migrate
+# sudo -u capu python3 /home/capu/manage.py migrate
 
 echo "Initializing Gunicorn..."
 sudo mv gunicorn.service gunicorn.socket /etc/systemd/system/
-sudo systemctl enable --now gunicorn.socket
-sudo systemctl enable --now gunicorn.service
+sudo systemctl enable gunicorn.socket
+sudo systemctl enable gunicorn.service
 
 echo "Installing NGINX..."
 sudo apt-get install -y nginx
@@ -57,7 +58,6 @@ sudo mv nginx.conf /etc/nginx/nginx.conf
 sudo mkdir /var/www/static/
 sudo chown capu:capu /var/www/static/
 sudo -u capu python3 /home/capu/manage.py collectstatic
-sudo mv index.html /var/www/index.html
 
 echo "Configuring HTTPS..."
 sudo snap install core

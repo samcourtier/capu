@@ -1,32 +1,11 @@
 # Plan
 
-- [ ] Serve placeholder page from Django instead of NGINX
+- [ ] Figure out how to share parts of settings.py between dev/stage/prod
 - [ ] Set up admin site
 - [ ] Create basic calendar
   - Two pages: 'Upcoming Rides' and 'Past Rides'
     - Announcements visible on both
     - Upcoming rides includes N recently completed rides
-  - Model
-    - Settings
-      - featured_posts
-      - recently_completed_duration
-    - Post
-      - id
-      - title
-      - subtitle
-      - body
-    - Event
-      - post
-      - departure
-      - status
-      - attributes
-      - event_close
-    - EventClose
-      - body
-      - attributes
-    - EventAttribute
-      - name
-      - value
 
 ## Backlog
 
@@ -39,6 +18,7 @@
 
 ## Done
 
+- [x] Serve placeholder page from Django instead of NGINX
 - [x] Set up database backups
 - [x] Store postgres data on EBS volume
 - [x] Run server with dedicated capu user instead of ubuntu

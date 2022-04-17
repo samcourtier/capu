@@ -6,3 +6,6 @@ variables.hcl
 
 server-keys
 secret_key.txt
+
+venv
+__pycache__

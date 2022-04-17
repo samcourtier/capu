@@ -2,6 +2,5 @@
 - `settings.py` and `secret_key.txt`: Django settings and SECRET_KEY
 - `gunicorn.service` and `gunicorn.socket`: systemd service and NGINX socket
 - `nginx.conf`: NGINX config
-- `index.html`: Placeholder page
 - `init-certbot.service`: systemd service to run certbot after deployment
 - `backup`: cron job for backing up DB to S3

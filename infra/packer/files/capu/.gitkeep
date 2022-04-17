@@ -1,0 +1,3 @@
+# This is a convenient way to ensure that a capu directory exists on the remote
+# machine, enabling a subsequent file provisioner to upload the source directory
+# to it.
