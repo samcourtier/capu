@@ -12,10 +12,22 @@ sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get update
 
-echo "Installing PostgreSQL..."
-sudo apt-get install -y postgresql
-sudo -u postgres createuser capu
-sudo -u postgres createdb -O capu capu
+echo "Initializing database..."
+sudo apt-get install -y postgresql awscli
+echo "/dev/xvdf /var/lib/postgresql/12/main/ xfs defaults,nofail 0 2" |
+    sudo tee -a /etc/fstab
+# Commands needed for fresh EBS database data volumes
+# sudo -u postgres createuser capu
+# sudo -u postgres createdb -O capu capu
+# sudo systemctl stop postgresql
+# sudo mv /var/lib/postgresql/12/main /var/lib/postgresql/12/mainbak
+# sudo mkfs -t xfs /dev/xvdf
+# sudo mount -a
+# sudo rsync -a /var/lib/postgresql/12/mainbak /var/lib/postgresql/12/main
+# sudo rm -rf /var/lib/postgresql/12/mainbak
+# sudo systemctl start postgresql
+sudo chown root:root backup
+sudo mv backup /etc/cron.d/backup
 
 echo "Installing Python requirements..."
 sudo apt-get install -y \

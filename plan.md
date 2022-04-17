@@ -1,6 +1,5 @@
 # Plan
 
-- [ ] Set up database backups
 - [ ] Serve placeholder page from Django instead of NGINX
 - [ ] Set up admin site
 - [ ] Create basic calendar
@@ -29,15 +28,19 @@
       - name
       - value
 
-
 ## Backlog
 
 - [ ] Terraform remote state on S3
 - [ ] Increase SECURE_HSTS_SECONDS to 31536000 when site is stable
 - [ ] cron job for pulling from main
+- [ ] Check on backups
+- [ ] Prevent EBS volume destroy
+- [ ] Persist SSL certs
 
 ## Done
 
+- [x] Set up database backups
+- [x] Store postgres data on EBS volume
 - [x] Run server with dedicated capu user instead of ubuntu
 - [x] Wire up NGINX - Gunicorn - Django + firewall
 - [x] Set up Django with Postgres

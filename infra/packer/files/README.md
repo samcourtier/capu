@@ -4,3 +4,4 @@
 - `nginx.conf`: NGINX config
 - `index.html`: Placeholder page
 - `init-certbot.service`: systemd service to run certbot after deployment
+- `backup`: cron job for backing up DB to S3

@@ -31,7 +31,6 @@ ALLOWED_HOSTS = [
     "www.capu.club",
 ]
 
-
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
