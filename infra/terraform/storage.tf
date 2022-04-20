@@ -1,3 +1,6 @@
+# Production database persistence 
+# -------------------------------
+
 resource "aws_ebs_volume" "data_prod" {
   availability_zone = "us-east-2b"
   size              = 1
@@ -18,6 +21,9 @@ resource "aws_volume_attachment" "data_prod" {
   stop_instance_before_detaching = true
 }
 
+# Backups
+# -------
+
 resource "aws_s3_bucket" "backups" {
   bucket = "capu-backups"
   acl    = "private"
@@ -25,15 +31,41 @@ resource "aws_s3_bucket" "backups" {
   tags = {
     Name = "Cap U Backups"
   }
+}
 
-  lifecycle_rule {
-    id      = "expiration"
-    enabled = true
+resource "aws_s3_bucket_lifecycle_configuration" "expiration" {
+  bucket = aws_s3_bucket.backups.id
+
+  rule {
+    id     = "expiration"
+    status = "Enabled"
 
     expiration {
       days = 90
     }
   }
+}
+
+# Production Backups
+
+resource "aws_iam_role" "ec2_backups" {
+  name = "ec2-backups"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = ""
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = [
+            "ec2.amazonaws.com"
+          ]
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_iam_policy" "backups" {
@@ -56,8 +88,21 @@ resource "aws_iam_policy" "backups" {
   })
 }
 
-resource "aws_iam_role" "ec2" {
-  name = "ec2"
+resource "aws_iam_policy_attachment" "ec2_backups" {
+  name       = "ec2-backups"
+  roles      = [aws_iam_role.ec2_backups.name]
+  policy_arn = aws_iam_policy.backups.arn
+}
+
+resource "aws_iam_instance_profile" "ec2_backups" {
+  name = "ec2-backups"
+  role = aws_iam_role.ec2_backups.name
+}
+
+# Staging backup downloads
+
+resource "aws_iam_role" "ec2_read_backups" {
+  name = "ec2-read-backups"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -76,13 +121,33 @@ resource "aws_iam_role" "ec2" {
   })
 }
 
-resource "aws_iam_policy_attachment" "ec2_backups" {
-  name       = "ec2"
-  roles      = [aws_iam_role.ec2.name]
-  policy_arn = aws_iam_policy.backups.arn
+resource "aws_iam_policy" "read_backups" {
+  name        = "read-backups"
+  description = "Allow S3 read actions on the backups bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowS3ReadActionsOnBackupsBucket"
+        Effect = "Allow"
+        Action = ["s3:List*", "s3:Get*"]
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.backups.id}",
+          "arn:aws:s3:::${aws_s3_bucket.backups.id}/*"
+        ]
+      }
+    ]
+  })
 }
 
-resource "aws_iam_instance_profile" "ec2" {
-  name = "ec2"
-  role = aws_iam_role.ec2.name
+resource "aws_iam_policy_attachment" "ec2_read_backups" {
+  name       = "ec2-read-backups"
+  roles      = [aws_iam_role.ec2_read_backups.name]
+  policy_arn = aws_iam_policy.read_backups.arn
+}
+
+resource "aws_iam_instance_profile" "ec2_read_backups" {
+  name = "ec2-read-backups"
+  role = aws_iam_role.ec2_read_backups.name
 }

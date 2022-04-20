@@ -1,13 +1,25 @@
-data "aws_ami" "server" {
+data "aws_ami" "stage" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = [var.server_ami_name]
+    values = ["${var.server_ami_name} - Stage"]
   }
 
   owners = ["self"]
 }
+
+data "aws_ami" "prod" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["${var.server_ami_name} - Prod"]
+  }
+
+  owners = ["self"]
+}
+
 
 resource "aws_security_group" "server" {
 
@@ -54,19 +66,38 @@ resource "aws_security_group" "server" {
   }
 }
 
-resource "aws_instance" "prod" {
-  ami                  = data.aws_ami.server.id
+resource "aws_instance" "stage" {
+  ami                  = data.aws_ami.stage.id
   instance_type        = "t2.micro"
   security_groups      = [aws_security_group.server.name]
-  iam_instance_profile = aws_iam_instance_profile.ec2.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_read_backups.name
 
   tags = {
     Name = "Cap U - Prod"
   }
 }
 
+resource "aws_instance" "prod" {
+  ami                  = data.aws_ami.prod.id
+  instance_type        = "t2.micro"
+  security_groups      = [aws_security_group.server.name]
+  iam_instance_profile = aws_iam_instance_profile.ec2_backups.name
+
+  tags = {
+    Name = "Cap U - Prod"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_eip" "prod" {
   instance = aws_instance.prod.id
+}
+
+output "stage_ip" {
+  value = aws_instance.stage.public_ip
 }
 
 output "prod_ip" {

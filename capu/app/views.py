@@ -6,17 +6,16 @@ from .models import Post, PostAttribute
 
 
 def index(request: HttpRequest) -> HttpResponse:
+    attributes_prefetch = Prefetch(
+        "postattribute_set",
+        queryset=PostAttribute.objects.exclude(display_priority=0).order_by(
+            "-display_priority",
+        ),
+    )
     posts = (
         Post.objects.exclude(display_priority=0)
         .order_by("-display_priority")
-        .prefetch_related(
-            Prefetch(
-                "postattribute_set",
-                queryset=PostAttribute.objects.exclude(display_priority=0).order_by(
-                    "-display_priority",
-                ),
-            ),
-        )
+        .prefetch_related(attributes_prefetch)
         .all()
     )
     return render(

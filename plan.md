@@ -1,6 +1,5 @@
 # Plan
 
-- [ ] Set up staging environment
 - [ ] Fix EBS postgres mounting
 - [ ] Automate source code deployment
 - [ ] Create basic calendar
@@ -20,6 +19,7 @@
 
 ## Done
 
+- [x] Set up staging environment
 - [x] Create bare-bones, flexible posting system to crowdsource feature design
 - [x] Set up admin site
 - [x] Serve placeholder page from Django instead of NGINX

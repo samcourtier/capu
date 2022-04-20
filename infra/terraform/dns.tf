@@ -44,3 +44,14 @@ resource "aws_route53_record" "www" {
 
   records = [each.key]
 }
+
+resource "aws_route53_record" "stage" {
+  for_each = toset(local.domains)
+
+  name    = "stage"
+  type    = "A"
+  ttl     = 300
+  zone_id = aws_route53_zone.zone[each.key].zone_id
+
+  records = [aws_instance.stage.public_ip]
+}

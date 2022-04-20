@@ -1,4 +1,3 @@
-- `server-keys`: The server's SSH keys
 - `settings.py` and `secret_key.txt`: Django settings and SECRET_KEY
 - `gunicorn.service` and `gunicorn.socket`: systemd service and NGINX socket
 - `nginx.conf`: NGINX config

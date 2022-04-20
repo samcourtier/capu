@@ -14,20 +14,25 @@ sudo apt-get update
 
 echo "Initializing database..."
 sudo apt-get install -y postgresql awscli
-echo "/dev/xvdf /var/lib/postgresql/12/main/ xfs defaults,nofail 0 2" |
-    sudo tee -a /etc/fstab
-# Commands needed for fresh EBS database data volumes
-# sudo -u postgres createuser capu
-# sudo -u postgres createdb -O capu capu
-# sudo systemctl stop postgresql
-# sudo mv /var/lib/postgresql/12/main /var/lib/postgresql/12/mainbak
-# sudo mkfs -t xfs /dev/xvdf
-# sudo mount -a
-# sudo rsync -a /var/lib/postgresql/12/mainbak /var/lib/postgresql/12/main
-# sudo rm -rf /var/lib/postgresql/12/mainbak
-# sudo systemctl start postgresql
-sudo chown root:root backup
-sudo mv backup /etc/cron.d/backup
+if [[ "$SERVER" == "stage" ]]; then
+    sudo -u postgres createuser capu
+    sudo -u postgres createdb -O capu capu
+    sudo chown root:root shutdown
+    sudo mv shutdown /etc/cron.d/
+else
+    echo "/dev/xvdf /var/lib/postgresql/12/main/ xfs defaults,nofail 0 2" |
+        sudo tee -a /etc/fstab
+    sudo chown root:root backup
+    sudo mv backup /etc/cron.d/
+    # EBS volume initialization
+    # sudo systemctl stop postgresql
+    # sudo mv /var/lib/postgresql/12/main /var/lib/postgresql/12/mainbak
+    # sudo mkfs -t xfs /dev/xvdf
+    # sudo mount -a
+    # sudo rsync -a /var/lib/postgresql/12/mainbak /var/lib/postgresql/12/main
+    # sudo rm -rf /var/lib/postgresql/12/mainbak
+    # sudo systemctl start postgresql
+fi
 
 echo "Installing Python requirements..."
 sudo apt-get install -y \
@@ -40,13 +45,14 @@ sudo adduser --disabled-password --gecos "" capu
 sudo chown capu:capu -R capu settings.py secret_key.txt
 
 echo "Initializing capu Django project..."
-# sudo -u capu django-admin startproject capu /home/capu/
 sudo rsync -a capu/ /home/capu/
 sudo rm -rf capu/
 sudo mv settings.py /home/capu/capu/
 sudo mv secret_key.txt /home/capu/
 sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
-# sudo -u capu python3 /home/capu/manage.py migrate
+if [[ "$SERVER" == "stage" ]]; then
+    sudo -u capu python3 /home/capu/manage.py migrate
+fi
 
 echo "Initializing Gunicorn..."
 sudo mv gunicorn.service gunicorn.socket /etc/systemd/system/

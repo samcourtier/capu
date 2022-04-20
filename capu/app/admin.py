@@ -14,4 +14,5 @@ class PostAdmin(ModelAdmin):
 
     def get_changeform_initial_data(self, request):
         top_post = Post.objects.order_by("display_priority").last()
-        return {"display_priority": top_post.display_priority + 1}
+        priority = top_post.display_priority + 1 if top_post else 1
+        return {"display_priority": priority}

@@ -2,6 +2,6 @@
 
 (
     cd packer &&
-        packer validate -var-file=../variables.hcl . &&
-        packer build -force -var-file=../variables.hcl server.pkr.hcl
+        packer validate -var-file=../variables.hcl -var "server=$1" . &&
+        packer build -force -var-file=../variables.hcl -var "server=$1" server.pkr.hcl
 )

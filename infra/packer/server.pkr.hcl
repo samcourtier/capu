@@ -7,11 +7,17 @@ packer {
   }
 }
 
+variable "server" {
+  validation {
+    condition     = contains(["stage", "prod"], var.server)
+    error_message = "Must be 'stage' or 'prod'."
+  }
+}
 variable "server_ami_name" {}
 variable "public_ed25519_key_path" {}
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = var.server_ami_name
+  ami_name      = "${var.server_ami_name} - ${title(var.server)}"
   instance_type = "t2.micro"
   region        = "us-east-2"
 
@@ -39,7 +45,7 @@ build {
 
   # Various deployment files, inc. placeholder directory for capu source
   provisioner "file" {
-    source = "files/"
+    sources = ["files/common/", "files/${var.server}/"]
     destination = "."
   }
 
@@ -51,5 +57,6 @@ build {
 
   provisioner "shell" {
     script = "init.sh"
+    environment_vars = ["SERVER=${var.server}"]
   }
 }
