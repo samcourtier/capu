@@ -14,5 +14,9 @@ provider "aws" {
   region  = "us-east-2"
 }
 
-
 variable "server_ami_name" {}
+variable "include_stage" { default = false }
+
+locals {
+  stage_count = var.include_stage ? 1 : 0
+}

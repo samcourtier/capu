@@ -67,13 +67,15 @@ resource "aws_security_group" "server" {
 }
 
 resource "aws_instance" "stage" {
+  count = local.stage_count
+
   ami                  = data.aws_ami.stage.id
   instance_type        = "t2.micro"
   security_groups      = [aws_security_group.server.name]
   iam_instance_profile = aws_iam_instance_profile.ec2_read_backups.name
 
   tags = {
-    Name = "Cap U - Prod"
+    Name = "Cap U - Stage"
   }
 }
 
@@ -97,7 +99,7 @@ resource "aws_eip" "prod" {
 }
 
 output "stage_ip" {
-  value = aws_instance.stage.public_ip
+  value = var.include_stage ? aws_instance.stage[0].public_ip : null
 }
 
 output "prod_ip" {

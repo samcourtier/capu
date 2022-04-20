@@ -46,12 +46,12 @@ resource "aws_route53_record" "www" {
 }
 
 resource "aws_route53_record" "stage" {
-  for_each = toset(local.domains)
+  for_each = var.include_stage ? toset(local.domains) : []
 
   name    = "stage"
   type    = "A"
   ttl     = 300
   zone_id = aws_route53_zone.zone[each.key].zone_id
 
-  records = [aws_instance.stage.public_ip]
+  records = [aws_instance.stage[0].public_ip]
 }

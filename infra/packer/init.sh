@@ -20,18 +20,20 @@ if [[ "$SERVER" == "stage" ]]; then
     sudo chown root:root shutdown
     sudo mv shutdown /etc/cron.d/
 else
-    echo "/dev/xvdf /var/lib/postgresql/12/main/ xfs defaults,nofail 0 2" |
-        sudo tee -a /etc/fstab
+    # TODO: Check if /dev/xvdf is formatted, populated and do a full DB init
+    # if not
+    sudo mkdir /mnt/data
+    sudo chown postgres:postgres /mnt/data
+    echo "/dev/xvdf /mnt/data xfs defaults,nofail 0 2" | sudo tee -a /etc/fstab
+    # sudo mkfs -t xfs /dev/xvdf
+    sudo mount -a
+    sudo systemctl stop postgresql
+    # sudo mv /var/lib/postgresql/12/main /mnt/data
+    sudo rm -rf /var/lib/postgres/12/main
+    sudo -u postgres ln -s /mnt/data /var/lib/postgresql/12/main
+    # sudo rm -rf /var/lib/postgresql/12/mainbak
     sudo chown root:root backup
     sudo mv backup /etc/cron.d/
-    # EBS volume initialization
-    # sudo systemctl stop postgresql
-    # sudo mv /var/lib/postgresql/12/main /var/lib/postgresql/12/mainbak
-    # sudo mkfs -t xfs /dev/xvdf
-    # sudo mount -a
-    # sudo rsync -a /var/lib/postgresql/12/mainbak /var/lib/postgresql/12/main
-    # sudo rm -rf /var/lib/postgresql/12/mainbak
-    # sudo systemctl start postgresql
 fi
 
 echo "Installing Python requirements..."

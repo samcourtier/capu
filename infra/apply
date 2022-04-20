@@ -3,5 +3,5 @@
 (
     cd terraform &&
         terraform fmt &&
-        terraform apply -var-file=../variables.hcl
+        terraform apply -var-file=../variables.hcl $@
 )

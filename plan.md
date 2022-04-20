@@ -1,6 +1,5 @@
 # Plan
 
-- [ ] Fix EBS postgres mounting
 - [ ] Automate source code deployment
 - [ ] Create basic calendar
   - Two pages: 'Upcoming Rides' and 'Past Rides'
@@ -16,9 +15,11 @@
 - [ ] Persist SSL certs
 - [ ] Add rich editing
 - [ ] Figure out how to share parts of settings.py between dev/stage/prod
+- [ ] Handle uninitialized EBS volumes in init.sh
 
 ## Done
 
+- [x] Fix EBS postgres mounting
 - [x] Set up staging environment
 - [x] Create bare-bones, flexible posting system to crowdsource feature design
 - [x] Set up admin site

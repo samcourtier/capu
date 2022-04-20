@@ -1,7 +1,7 @@
-# Production database persistence 
+# Database persistence 
 # -------------------------------
 
-resource "aws_ebs_volume" "data_prod" {
+resource "aws_ebs_volume" "prod" {
   availability_zone = "us-east-2b"
   size              = 1
 
@@ -14,12 +14,34 @@ resource "aws_ebs_volume" "data_prod" {
   }
 }
 
-resource "aws_volume_attachment" "data_prod" {
+resource "aws_volume_attachment" "prod" {
   device_name                    = "/dev/sdf"
-  volume_id                      = aws_ebs_volume.data_prod.id
+  volume_id                      = aws_ebs_volume.prod.id
   instance_id                    = aws_instance.prod.id
   stop_instance_before_detaching = true
 }
+
+// NOTE: We're not persisting stage data; these are just for troubleshooting.
+
+// resource "aws_ebs_volume" "stage" {
+//   count = local.stage_count
+
+//   availability_zone = "us-east-2b"
+//   size              = 1
+
+//   tags = {
+//     Name = "Stage database data directory"
+//   }
+// }
+
+// resource "aws_volume_attachment" "stage" {
+//   count = local.stage_count
+
+//   device_name                    = "/dev/sdf"
+//   volume_id                      = aws_ebs_volume.stage.id
+//   instance_id                    = aws_instance.stage.id
+//   stop_instance_before_detaching = true
+// }
 
 # Backups
 # -------
@@ -46,7 +68,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "expiration" {
   }
 }
 
-# Production Backups
+# Production backups
 
 resource "aws_iam_role" "ec2_backups" {
   name = "ec2-backups"
