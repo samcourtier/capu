@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# TODO: Remove code duplicated from ./deploy
+
+set -e
+
+rsync -rzlIpvh --delete \
+    capu infra/packer/files/stage/{settings.py,secret_key.txt} \
+    ubuntu@stage.capitolunited.org:/home/ubuntu
+ssh ubuntu@stage.capitolunited.org /bin/bash <<EOF
+    set -e
+    sudo chown -R capu:capu settings.py secret_key.txt capu
+    sudo rsync -aI --delete --delete capu/ /home/capu/
+    sudo mv secret_key.txt /home/capu
+    sudo mv settings.py /home/capu/capu
+    sudo rm -rf capu
+    sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
+    sudo -u capu python3 /home/capu/manage.py migrate
+EOF

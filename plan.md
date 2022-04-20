@@ -1,6 +1,6 @@
 # Plan
 
-- [ ] Automate source code deployment
+- [ ] Script production DB import
 - [ ] Create basic calendar
   - Two pages: 'Upcoming Rides' and 'Past Rides'
     - Announcements visible on both
@@ -16,9 +16,12 @@
 - [ ] Add rich editing
 - [ ] Figure out how to share parts of settings.py between dev/stage/prod
 - [ ] Handle uninitialized EBS volumes in init.sh
+- [ ] Address duplication between init.sh and deploy script
+- [ ] Address duplication between ./deploy and ./stage
 
 ## Done
 
+- [x] Script source code deployment
 - [x] Fix EBS postgres mounting
 - [x] Set up staging environment
 - [x] Create bare-bones, flexible posting system to crowdsource feature design
