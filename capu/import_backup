@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+if [[ $# -eq 0 ]]; then
+    echo "MISSING ARGUMENT: Provide an owner for the imported database."
+    exit 1
+fi
+
+USER=$1
+
+LATEST=$(aws s3 ls capu-backups | sort | tail -n 1 | awk '{print $4}')
+aws s3 cp s3://capu-backups/$LATEST ./latest_backup.sql
+sudo -u postgres dropdb --if-exists capu
+sudo -u postgres createdb -O $USER capu
+sudo -u $USER psql -d capu -f latest_backup.sql
