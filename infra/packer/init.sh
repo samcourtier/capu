@@ -42,6 +42,7 @@ sudo chown capu:capu -R capu settings.py secret_key.txt
 echo "Initializing capu Django project..."
 # sudo -u capu django-admin startproject capu /home/capu/
 sudo rsync -a capu/ /home/capu/
+sudo rm -rf capu/
 sudo mv settings.py /home/capu/capu/
 sudo mv secret_key.txt /home/capu/
 sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING

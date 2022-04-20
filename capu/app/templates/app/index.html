@@ -8,11 +8,38 @@
         margin: 0 auto;
         font-family: Tahoma, Verdana, Arial, sans-serif;
       }
+
+      .subheading {
+        margin-top: -1rem;
+        font-size: 0.92rem;
+      }
+
+      th {
+        text-align: left;
+      }
+
+      hr {
+        border: 1px solid;
+      }
     </style>
   </head>
   <body>
     <h1>Capitol United Cycling Club</h1>
-    <p>This site is under development. Check back for updates.</p>
-    <p><em>April 16, 2022</em></p>
+    {% for post in posts %}
+    <article>
+      <h3>{{post.title}}</h3>
+      <p class="subheading">{{post.subtitle}}</p>
+      <p>{{post.body}}</p>
+      <table>
+        {% for attribute in post.postattribute_set.all %}
+        <tr>
+          <th>{{attribute.name}}:</th>
+          <td>{{attribute.value}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </article>
+    <hr />
+    {% endfor %}
   </body>
 </html>
