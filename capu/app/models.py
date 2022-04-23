@@ -1,13 +1,11 @@
 from django.db.models import (
     CASCADE,
+    BigAutoField,
     CharField,
-    DateTimeField,
-    Deferrable,
     ForeignKey,
     IntegerField,
     Model,
     TextField,
-    UniqueConstraint,
 )
 
 # Model:
@@ -34,6 +32,7 @@ from django.db.models import (
 
 
 class Post(Model):
+    id = BigAutoField("ID", db_column="post_id", primary_key=True)
     title = CharField("Title", max_length=256)
     subtitle = CharField("Subtitle", max_length=256, blank=True, default="")
     body = TextField("Body")
@@ -41,9 +40,16 @@ class Post(Model):
         default=0, help_text="Set this to 0 to hide the post."
     )
 
+    class Meta:
+        managed = False
+        db_table = "posts"
+
 
 class PostAttribute(Model):
-    post = ForeignKey(Post, on_delete=CASCADE)
+    id = BigAutoField("ID", db_column="post_attribute_id", primary_key=True)
+    post = ForeignKey(
+        Post, related_name="attributes", db_column="post_id", on_delete=CASCADE
+    )
     name = CharField("Name", max_length=64)
     value = CharField("Value", max_length=512)
     display_priority = IntegerField(
@@ -51,10 +57,6 @@ class PostAttribute(Model):
     )
 
     class Meta:
-        constraints = [
-            UniqueConstraint(
-                name="unique_post_attribute",
-                fields=["post", "name"],
-                deferrable=Deferrable.DEFERRED,
-            )
-        ]
+        managed = False
+        db_table = "post_attributes"
+        unique_together = (("post", "name"),)
