@@ -2,10 +2,50 @@
 
 set -e
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+SERVER=$1
+
+if [[ $# -eq 0 ]] || [[ ! "$SERVER" =~ ^(stage|prod)$ ]]; then
+    echo ""
+    echo "ARGUMENT ERROR: Specify whether to deploy to 'stage' or 'prod'."
+    echo ""
+    exit 1
+fi
+
+DOMAIN="capitolunited.org"
+if [[ "$SERVER" == "stage" ]]; then
+    DOMAIN="stage.$DOMAIN"
+fi
+
+echo ""
+echo "${bold}Running tests...${normal}"
+echo ""
+./test
+
+echo ""
+echo "${bold}Tests passed.${normal}"
+
+if [[ "$SERVER" == "prod" ]]; then
+    read -p "${bold}Enter 'Yes' to deploy to prod:${normal} " -r
+    if [[ $REPLY != "Yes" ]]; then
+        echo ""
+        echo "${bold}Canceled production deployment.${normal}"
+        echo ""
+        exit 1
+    fi
+fi
+
+echo ""
+echo "${bold}Deploying to $DOMAIN...${normal}"
+echo ""
+
 rsync -rzlIpvh --delete \
-    capu infra/packer/files/prod/{settings.py,secret_key.txt} \
-    ubuntu@capitolunited.org:/home/ubuntu
-ssh ubuntu@capitolunited.org /bin/bash <<EOF
+    capu infra/packer/files/$SERVER/{settings.py,secret_key.txt} \
+    ubuntu@$DOMAIN:/home/ubuntu
+
+ssh ubuntu@$DOMAIN /bin/bash <<EOF
     set -e
     sudo chown -R capu:capu settings.py secret_key.txt capu
     sudo rsync -aI --delete --delete capu/ /home/capu/
@@ -15,3 +55,7 @@ ssh ubuntu@capitolunited.org /bin/bash <<EOF
     sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
     sudo -u capu python3 /home/capu/manage.py migrate
 EOF
+
+echo ""
+echo "${bold}Done.${normal}"
+echo ""

@@ -18,11 +18,11 @@
 - [ ] Add rich editing
 - [ ] Figure out how to share parts of settings.py between dev/stage/prod
 - [ ] Handle uninitialized EBS volumes in init.sh
-- [ ] Address duplication between init.sh and deploy script
 - [ ] Ensure `ContentType.objects.clear_cache()` is cleared between all test cases
 
 ## Done
 
+- [x] Address duplication between ./deploy and ./stage
 - [x] Add tests for the admin site
 - [x] Find a way to structure models and migrations so that the database determines how the Django models should be built rather than the other way around
 - [x] Script production DB import
