@@ -1,6 +1,8 @@
 # Plan
 
-- [ ] Script production DB import
+- [ ] Do a first-pass theming
+  - Use random color palette if they haven't gotten me one yet
+- [ ] Fix automatic staging shutdown
 - [ ] Create basic calendar
   - Two pages: 'Upcoming Rides' and 'Past Rides'
     - Announcements visible on both
@@ -17,10 +19,13 @@
 - [ ] Figure out how to share parts of settings.py between dev/stage/prod
 - [ ] Handle uninitialized EBS volumes in init.sh
 - [ ] Address duplication between init.sh and deploy script
-- [ ] Address duplication between ./deploy and ./stage
+- [ ] Ensure `ContentType.objects.clear_cache()` is cleared between all test cases
 
 ## Done
 
+- [x] Add tests for the admin site
+- [x] Find a way to structure models and migrations so that the database determines how the Django models should be built rather than the other way around
+- [x] Script production DB import
 - [x] Script source code deployment
 - [x] Fix EBS postgres mounting
 - [x] Set up staging environment
