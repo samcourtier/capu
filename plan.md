@@ -22,6 +22,8 @@
 
 ## Done
 
+- [x] Hand-deploy new DB schema to prod
+- [x] Make sql migration script paths absolute/project-relative
 - [x] Address duplication between ./deploy and ./stage
 - [x] Add tests for the admin site
 - [x] Find a way to structure models and migrations so that the database determines how the Django models should be built rather than the other way around

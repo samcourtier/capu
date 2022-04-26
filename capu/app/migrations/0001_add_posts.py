@@ -1,8 +1,9 @@
 from pathlib import Path
+
 from django.db import migrations
 
 
-MIGRATIONS = Path("app", "migrations")
+MIGRATIONS = Path(__file__).resolve().parent
 
 
 class Migration(migrations.Migration):

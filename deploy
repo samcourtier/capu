@@ -37,14 +37,24 @@ if [[ "$SERVER" == "prod" ]]; then
     fi
 fi
 
-echo ""
-echo "${bold}Deploying to $DOMAIN...${normal}"
-echo ""
+if [[ "$SERVER" == "prod" ]]; then
+    echo ""
+    echo "${bold}Backing up database...${normal}"
+    echo ""
+    ssh ubuntu@$DOMAIN /bin/bash \
+        sudo -u capu pg_dump | aws s3 cp - s3://capu-backups/$(date +\%s)-deploy
+fi
 
-rsync -rzlIpvh --delete \
+echo ""
+echo "${bold}Transfering files...${normal}"
+echo ""
+rsync -rzlIpvh --exclude venv --delete \
     capu infra/packer/files/$SERVER/{settings.py,secret_key.txt} \
     ubuntu@$DOMAIN:/home/ubuntu
 
+echo ""
+echo "${bold}Installing app...${normal}"
+echo ""
 ssh ubuntu@$DOMAIN /bin/bash <<EOF
     set -e
     sudo chown -R capu:capu settings.py secret_key.txt capu
@@ -54,6 +64,7 @@ ssh ubuntu@$DOMAIN /bin/bash <<EOF
     sudo rm -rf capu
     sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
     sudo -u capu python3 /home/capu/manage.py migrate
+    sudo systemctl restart gunicron
 EOF
 
 echo ""
