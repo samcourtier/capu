@@ -64,7 +64,8 @@ ssh ubuntu@$DOMAIN /bin/bash <<EOF
     sudo rm -rf capu
     sudo -u capu python3 /home/capu/manage.py check --deploy --fail-level WARNING
     sudo -u capu python3 /home/capu/manage.py migrate
-    sudo systemctl restart gunicron
+    sudo -u capu python3 /home/capu/manage.py collectstatic --no-input
+    sudo systemctl restart gunicorn
 EOF
 
 echo ""
