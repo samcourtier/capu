@@ -1,5 +1,13 @@
 # Plan
 
+- [ ] Incorporate elements of Andy's first posts into the schema
+  - [x] Migrations/models
+  - [x] Admin
+  - [ ] Views
+  - [ ] Feature tests
+  - [ ] Migration tests
+  - [ ] Deploy
+- [ ] Consolidate shared post / planned ride structure
 - [ ] Do a first-pass theming
   - Use random color palette if they haven't gotten me one yet
 - [ ] Fix automatic staging shutdown

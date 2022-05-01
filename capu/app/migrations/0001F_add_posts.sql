@@ -8,7 +8,7 @@ create table posts (
 
 create table post_attributes (
     post_attribute_id bigserial primary key,
-    post_id bigserial references posts(post_id),
+    post_id bigserial references posts(post_id) not null,
     name text not null,
     value text not null,
     display_priority integer not null default 0,
